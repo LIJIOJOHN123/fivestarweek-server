@@ -9,6 +9,7 @@ const ChannelViewIP = require("../model/ChannelViewIP");
 const ChannelVisitAuth = require("../model/ChannelVisitorAuth");
 const ChannelVisitIP = require("../model/ChannelVisitorIP");
 const ChannelSponsor = require("../model/SponsorChannel");
+const Preference = require("../model/Preference");
 
 //name:Create Channel
 //desc: create new channel
@@ -526,6 +527,20 @@ exports.channelVisitIpDetails = async (req, res) => {
     }
     await channel.save();
     res.send(views);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+exports.getSuggestedChannels = async (req, res) => {
+  try {
+    const preference = await Preference({ user: req.user._id })
+      .select(["-keyword", "-intersted", "-visited"])
+      .populate(["country", "city", "state", "language"]);
+    const channels = await Channel.find({
+      language: preference.language._id,
+    }).limit(parseInt(req.query.limit));
+    res.send({ channels });
   } catch (error) {
     res.status(500).send(error);
   }

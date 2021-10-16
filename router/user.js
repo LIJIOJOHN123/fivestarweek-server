@@ -37,6 +37,7 @@ const {
   channelViewIpDetails,
   channelVisitDetailsAuth,
   channelVisitIpDetails,
+  getSuggestedChannels,
 } = require("../controller/channelController");
 const {
   createArticle,
@@ -135,6 +136,8 @@ const {
   forcedArticleSponsorExit,
   articleSponsorDelete,
   channelSponsorDelete,
+  articleSponsorePublic,
+  channleSponsorePublic,
 } = require("../controller/sponsorController");
 const {
   createSurvey,
@@ -231,7 +234,7 @@ userRouter.post("/channel/:id/view", authMiddleware, channelViewDetailsAuth);
 userRouter.post("/channel/ipview/:id", channelViewIpDetails);
 userRouter.post("/channel/:id/visit", authMiddleware, channelVisitDetailsAuth);
 userRouter.post("/channel/ipvisitor/:id", channelVisitIpDetails);
-
+userRouter.post("/channel/suggested", authMiddleware, getSuggestedChannels);
 //@public
 userRouter.get("/channels", getAllChannels);
 userRouter.get("/channels/:id", getByIdChannels);
@@ -321,7 +324,6 @@ var upload = multer({
     key: function (req, file, cb) {
       const extendname = file.originalname.split(".");
       const fileName = extendname[extendname.length - 1];
-      console.log(fileName);
       if (fileName === "jpeg" || fileName === "jpg" || fileName === "png") {
         cb(null, uuid() + "." + fileName);
       }
@@ -378,6 +380,8 @@ userRouter.post("/articlesponsor", authMiddleware, createArticleSponsor);
 
 userRouter.post("/channelsponsor", authMiddleware, createChannelSponsor);
 userRouter.get("/sponsorechannelbyid/:id", authMiddleware, sponsoreChannelById);
+userRouter.get("/articlesponsorelist", mixmiddleware, articleSponsorePublic);
+userRouter.get("/channelsponosrelist", mixmiddleware, channleSponsorePublic);
 userRouter.post(
   "/forcedchannelsponsorexit/:id",
   authMiddleware,

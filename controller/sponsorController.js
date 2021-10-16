@@ -17,6 +17,7 @@ const ChannelSponsor = require("../model/SponsorChannel");
 const State = require("../model/State");
 var mongoose = require("mongoose");
 const Language = require("../model/Language");
+const Preference = require("../model/Preference");
 
 exports.createArticleSponsor = async (req, res) => {
   const article = await Article.findOne({ _id: req.body.articleId });
@@ -423,6 +424,148 @@ exports.articleSponsorDelete = async (req, res) => {
     await sponsor.save();
     await article.save();
     res.send(sponsor);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+//article sponsore
+exports.articleSponsorePublic = async (req, res) => {
+  try {
+    const sponsoreArticles = await ArticleSponsor.find({
+      status: AppConstant.SPONSOR.SPONSORED,
+    })
+      .populate(["country", "city", "state", "language", "articleId"])
+      .limit(parseInt(req.query.limit));
+    //guest user
+    const sponsoreArts = sponsoreArticles.filter((item) => {
+      if (
+        item.country.country === "All" &&
+        item.state.state === "All" &&
+        item.city.city === "All" &&
+        item.ageFrom >= 12 &&
+        item.ageTo <= 100 &&
+        item.gender === "All" &&
+        item.language.language === "English"
+      ) {
+        return item;
+      }
+    });
+    let sponsoreArtsAuthUser;
+    if (req.user) {
+      //auth user
+      const preference = await Preference.findOne({ user: req.user._id })
+        .select(["-keyword", "-intersted", "-visited"])
+        .populate(["country", "city", "state", "language"]);
+      sponsoreArtsAuthUser = sponsoreArticles.filter((item) => {
+        if (
+          item.country.country === "All" &&
+          item.state.state === "All" &&
+          item.city.city === "All" &&
+          item.ageFrom === 12 &&
+          item.ageTo === 100 &&
+          item.gender === "All"
+        ) {
+          // return item;
+        } else {
+          const currentDate = new Date();
+          const userAge = currentDate.getFullYear() - preference.year;
+          if (
+            (preference.country.country === item.country.country ||
+              item.country.country === "All") &&
+            (preference.state.state === item.state.state ||
+              item.state.state === "All") &&
+            (preference.city.city === item.city.city ||
+              item.city.city === "All") &&
+            (preference.language.language === item.language.language ||
+              item.language.language === "English") &&
+            (userAge >= item.ageFrom || item.ageFrom >= 12) &&
+            (userAge <= item.ageTo || item.ageTo <= 100) &&
+            (preference.gender === item.gender || item.gender === "All")
+          ) {
+            return { item };
+          }
+        }
+      });
+    }
+    const articleguest = await sponsoreArts.map((item) => item.articleId);
+    const articlesId = await sponsoreArtsAuthUser.map((item) => item.articleId);
+    const articles = await Article.find({ _id: articlesId }).populate(
+      "channel"
+    );
+    const articlesGuest = await Article.find({ _id: articleguest }).populate(
+      "channel"
+    );
+    res.send({ articles, articlesGuest });
+    //login user
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+//channel sponosre
+
+exports.channleSponsorePublic = async (req, res) => {
+  try {
+    const sponsoreChannels = await ChannelSponsor.find({
+      status: AppConstant.SPONSOR.SPONSORED,
+    })
+      .populate(["country", "city", "state", "language", "channelId"])
+      .limit(parseInt(req.query.limit));
+    //guest user
+    const sponsoreChann = sponsoreChannels.filter((item) => {
+      if (
+        item.country.country === "All" &&
+        item.state.state === "All" &&
+        item.city.city === "All" &&
+        item.ageFrom >= 12 &&
+        item.ageTo <= 100 &&
+        item.gender === "All" &&
+        item.language.language === "English"
+      ) {
+        return item;
+      }
+    });
+    let sponsoreChannAuthUser;
+    if (req.user) {
+      //auth user
+      const preference = await Preference.findOne({ user: req.user._id })
+        .select(["-keyword", "-intersted", "-visited"])
+        .populate(["country", "city", "state", "language"]);
+      sponsoreChannAuthUser = sponsoreChannels.filter((item) => {
+        if (
+          item.country.country === "All" &&
+          item.state.state === "All" &&
+          item.city.city === "All" &&
+          item.ageFrom === 12 &&
+          item.ageTo === 100 &&
+          item.gender === "All"
+        ) {
+          // return item;
+        } else {
+          const currentDate = new Date();
+          const userAge = currentDate.getFullYear() - preference.year;
+          if (
+            (preference.country.country === item.country.country ||
+              item.country.country === "All") &&
+            (preference.state.state === item.state.state ||
+              item.state.state === "All") &&
+            (preference.city.city === item.city.city ||
+              item.city.city === "All") &&
+            (preference.language.language === item.language.language ||
+              item.language.language === "English") &&
+            (userAge >= item.ageFrom || item.ageFrom >= 12) &&
+            (userAge <= item.ageTo || item.ageTo <= 100) &&
+            (preference.gender === item.gender || item.gender === "All")
+          ) {
+            return { item };
+          }
+        }
+      });
+    }
+
+    res.send({ articles });
+    //login user
   } catch (error) {
     res.status(500).send(error);
   }

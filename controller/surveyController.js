@@ -234,7 +234,20 @@ exports.surveyAccept = async (req, res) => {
         });
       }
     }
-
+    if (survey.gender !== "All") {
+      if (survey.gender.toString() !== preference.gender.toString()) {
+        return res.status(404).send({
+          message: "You do not meet survey qualification criteria.",
+        });
+      }
+    }
+    const currentDate = new Date();
+    const userAge = currentDate.getFullYear - preference.year;
+    if (survey.ageFrom <= userAge || survey.ageTo >= userAge) {
+      return res.status(404).send({
+        message: "You do not meet survey qualification criteria.",
+      });
+    }
     if (survey.result.length >= survey.participants) {
       return res
         .status(404)
