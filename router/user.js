@@ -93,6 +93,7 @@ const {
 const {
   getPaymentDetails,
   addpayment,
+  payCallbackAPI,
 } = require("../controller/paymentConroller");
 const aws = require("aws-sdk");
 const uuid = require("uuid").v4;
@@ -170,6 +171,7 @@ userRouter.post("/userpremium", authMiddleware, premuiumUser);
 userRouter.post("/emailverification", authMiddleware, emailVerificationToken);
 userRouter.post("/emailverifyonline", authMiddleware, emailVerify);
 userRouter.get("/callback/premium/:id", paymentCallbackAPI);
+userRouter.get("/callback/payment/:id/:amount", payCallbackAPI);
 
 aws.config.update({
   accessKeyId: process.env.AWS_KEY,
@@ -234,7 +236,7 @@ userRouter.post("/channel/:id/view", authMiddleware, channelViewDetailsAuth);
 userRouter.post("/channel/ipview/:id", channelViewIpDetails);
 userRouter.post("/channel/:id/visit", authMiddleware, channelVisitDetailsAuth);
 userRouter.post("/channel/ipvisitor/:id", channelVisitIpDetails);
-userRouter.post("/channel/suggested", authMiddleware, getSuggestedChannels);
+userRouter.get("/channel/suggested", authMiddleware, getSuggestedChannels);
 //@public
 userRouter.get("/channels", getAllChannels);
 userRouter.get("/channels/:id", getByIdChannels);

@@ -1216,9 +1216,6 @@ exports.channelAddInfo = async (req, res) => {
       _id: req.params.id,
     });
     channel.language = req.body.language;
-    channel.country = req.body.country;
-    channel.state = req.body.state;
-    channel.city = req.body.city;
     await channel.save();
     res.send(channel);
   } catch (error) {

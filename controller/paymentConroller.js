@@ -20,7 +20,7 @@ exports.addpayment = async (req, res) => {
     data.purpose = req.body.purpose;
     data.amount = req.body.amount;
     data.buyer_name = req.user.name;
-    data.redirect_url = req.body.redirect_url;
+    data.redirect_url = `${process.env.SERVER_URL}/callback/payment/${req.user._id}/${req.body.amount}`;
     data.email = req.user.email;
     data.phone = req.user.mobile;
     data.send_email = false;
@@ -28,29 +28,45 @@ exports.addpayment = async (req, res) => {
     data.send_sms = false;
     data.allow_repeated_payment = false;
     data.customer_id = req.user._id;
-
     Insta.createPayment(data, async (error, response) => {
       if (error) {
         // some error
+        console.log(error);
       } else {
+        console.log(response);
         // Payment redirection link at response.payment_request.longurl
         const responseData = JSON.parse(response);
-        const payment = new Payment({
-          description: "Amount is added to account",
-          type: "Credit",
-          amount: req.body.amount,
-          user: req.user._id,
-        });
-        const paymentLast = await Payment.findOne({
-          user: req.user._id,
-        }).sort({ createdAt: -1 });
-        payment.balance =
-          parseInt(paymentLast.balance) + parseInt(req.body.amount);
-        await payment.save();
-        await req.user.save();
+
         const redirectUrl = responseData.payment_request.longurl;
+        console.log(redirectUrl);
         res.send(redirectUrl);
       }
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.payCallbackAPI = async (req, res) => {
+  try {
+    if (req.query.payment_id) {
+      const payment = new Payment({
+        description: "Amount is added to account",
+        type: "Credit",
+        amount: parseInt(req.params.amount),
+        user: req.params.id,
+      });
+      const paymentLast = await Payment.findOne({
+        user: req.params.id,
+      }).sort({ createdAt: -1 });
+      payment.balance =
+        parseInt(paymentLast.balance) + parseInt(req.params.amount);
+      await payment.save();
+
+      // Redirect the user to payment complete page.
+      return res.redirect(`${process.env.CLIENT_URL}/payment`);
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };

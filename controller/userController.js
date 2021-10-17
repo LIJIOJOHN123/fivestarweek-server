@@ -20,7 +20,7 @@ var Insta = require("instamojo-nodejs");
 const moment = require("moment");
 const Payment = require("../model/Payment");
 const url = require("url");
-const { PerformanceObserver } = require("perf_hooks");
+const queryString = require("query-string");
 
 /********************* Guest users  *******************/
 
@@ -92,7 +92,7 @@ exports.registartion = async (req, res) => {
       await addList.save();
       city = addList;
     }
-    const language = await Language.findOne({ language: req.body.language });
+
     const prefer = new Preference({
       user: user._id,
       country: country._id,
@@ -102,7 +102,7 @@ exports.registartion = async (req, res) => {
       month: req.body.month,
       year: req.body.year,
       gender: req.body.gender,
-      language: language._id,
+      language: req.body.language,
     });
     if (country) {
       user.phoneCode = country.phoneCode;
@@ -568,14 +568,16 @@ exports.logoutAll = async (req, res) => {
 //status:@private
 exports.addProfileImage = async (req, res) => {
   try {
+    console.log(req.query.zoom);
     const user = await User.findOne({ _id: req.user._id });
     const profileAvatar = {
       image: req.file.location,
-      zoom: req.body.zoom || 100,
+      zoom: parseInt(req.query.zoom),
     };
+
     user.avatars.unshift(profileAvatar);
     user.avatar.image = req.file.location;
-    user.avatar.zoom = req.body.zoom;
+    user.avatar.zoom = parseInt(req.query.zoom);
     await user.save();
     res.send(user);
   } catch (error) {
@@ -593,25 +595,21 @@ exports.premuiumUser = async (req, res) => {
     data.purpose = req.body.purpose;
     data.amount = req.body.amount;
     data.buyer_name = req.user.name;
-    data.redirect_url = req.body.redirect_url;
+    data.redirect_url = `${process.env.SERVER_URL}/callback/premium/${req.user._id}`;
     data.email = req.user.email;
     data.phone = req.user.mobile;
     data.send_email = false;
-    data.webhook = "https://www.youtube.com/";
+    data.webhook = "https://www.fivestarweek.com/";
     data.send_sms = false;
     data.allow_repeated_payment = false;
     data.customer_id = req.user._id;
 
     Insta.createPayment(data, async (error, response) => {
-      console.log(response);
       if (error) {
         // some error
       } else {
         // Payment redirection link at response.payment_request.longurl
         const responseData = JSON.parse(response);
-        req.user.isPremium = true;
-        req.user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
-        await req.user.save();
         const redirectUrl = responseData.payment_request.longurl;
         res.send(redirectUrl);
       }
@@ -619,20 +617,15 @@ exports.premuiumUser = async (req, res) => {
   } catch (error) {}
 };
 
-exports.paymentCallbackAPI = async (res, req) => {
+exports.paymentCallbackAPI = async (req, res) => {
   try {
-    console.log(req.url);
-    let url_parts = url.parse(req.url, true);
-    console.log(url_parts);
-    responseData = url_parts.query;
-    if (responseData.payment_id) {
-      console.log(req.params.id);
+    if (req.query.payment_id) {
       const user = await User.findOneAndUpdate({ _id: req.params.id });
       user.isPremium = true;
       user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
       await user.save();
       // Redirect the user to payment complete page.
-      return res.redirect("http://localhost:3000/profile");
+      return res.redirect(`${process.env.CLIENT_URL}/profile`);
     }
   } catch (error) {}
 };

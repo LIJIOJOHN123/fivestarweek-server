@@ -534,14 +534,29 @@ exports.channelVisitIpDetails = async (req, res) => {
 
 exports.getSuggestedChannels = async (req, res) => {
   try {
-    const preference = await Preference({ user: req.user._id })
+    const preference = await Preference.findOne({ user: req.user._id })
       .select(["-keyword", "-intersted", "-visited"])
       .populate(["country", "city", "state", "language"]);
-    const channels = await Channel.find({
+    const channel = await Channel.find({
       language: preference.language._id,
     }).limit(parseInt(req.query.limit));
+    const followChann = [];
+    channel
+      .map((single) => single.follows)
+      .map((single) =>
+        single.filter((double) => {
+          if (double.user.toString() === req.user._id.toString())
+            followChann.push(double.channel.toString());
+        })
+      );
+    const chan = channel.map((chans) => chans._id.toString());
+    const myArray = chan.filter((i) => followChann.indexOf(i) === -1);
+    const channels = await Channel.find({ _id: myArray }).limit(
+      parseInt(req.query.limit)
+    );
     res.send({ channels });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
