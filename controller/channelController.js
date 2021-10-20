@@ -491,12 +491,13 @@ exports.channelVisitDetailsAuth = async (req, res) => {
       const channelSponsore = await ChannelSponsor.findOne({
         channelId: channel._id,
       }).sort({ createdAt: -1 });
-      channelSponsore.authVisit.unshift(visitedChannel._id);
+      await channelSponsore.authVisit.unshift(visitedChannel._id);
       await channelSponsore.save();
     }
     await channel.save();
-    res.send(channel);
+    res.send({});
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -522,11 +523,11 @@ exports.channelVisitIpDetails = async (req, res) => {
       const channelSponsore = await ChannelSponsor.findOne({
         channelId: channel._id,
       }).sort({ createdAt: -1 });
-      channelSponsore.guestVisit.unshift(views._id);
+      await channelSponsore.guestVisit.unshift(views._id);
       await channelSponsore.save();
     }
     await channel.save();
-    res.send(views);
+    res.send({});
   } catch (error) {
     res.status(500).send(error);
   }

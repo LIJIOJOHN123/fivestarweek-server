@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const AppConstant = require("../config/appConstants");
+const { isEmail } = require("validator");
+
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema(
@@ -20,6 +22,7 @@ const UserSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      validate: [isEmail, "invalid email"],
     },
     isEmailVerified: {
       type: Boolean,
@@ -85,7 +88,7 @@ const UserSchema = new Schema(
     ],
     mobile: {
       type: String,
-      default: "000000000",
+      default: "9108167660",
     },
     phoneCode: {
       type: String,

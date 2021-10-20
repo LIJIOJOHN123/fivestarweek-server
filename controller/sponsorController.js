@@ -564,7 +564,43 @@ exports.channleSponsorePublic = async (req, res) => {
       });
     }
 
-    res.send({ articles });
+    const channelguests = await sponsoreChann.map((item) => item.channelId);
+    const channelsId = await sponsoreChannAuthUser.map(
+      (item) => item.channelId
+    );
+    const channels = await Channel.find({ _id: channelsId });
+    const channelGuest = await Channel.find({
+      _id: channelguests,
+    });
+
+    //guest
+    const followChann = [];
+    channelGuest
+      .map((single) => single.follows)
+      .map((single) =>
+        single.filter((double) => {
+          if (double.user.toString() === req.user._id.toString())
+            followChann.push(double.channel.toString());
+        })
+      );
+    const chan = channelGuest.map((chans) => chans._id.toString());
+    const myArray = chan.filter((i) => followChann.indexOf(i) === -1);
+    const channelGuestList = await Channel.find({ _id: myArray });
+    //auth
+    const followChann1 = [];
+    channels
+      .map((single) => single.follows)
+      .map((single) =>
+        single.filter((double) => {
+          if (double.user.toString() === req.user._id.toString())
+            followChann1.push(double.channel.toString());
+        })
+      );
+    const chan1 = channels.map((chans) => chans._id.toString());
+    const myArray1 = chan1.filter((i) => followChann1.indexOf(i) === -1);
+    const channelsAuthList = await Channel.find({ _id: myArray1 });
+
+    res.send({ channelGuestList, channelsAuthList });
     //login user
   } catch (error) {
     res.status(500).send(error);

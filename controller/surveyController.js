@@ -50,17 +50,18 @@ exports.createSurvey = async (req, res) => {
       language: languageSelect,
       city: citySelect,
       perSurveyPrice: req.body.perSurveyPrice,
-      total: req.body.total,
+      total: parseInt(req.body.total),
       ageFrom: req.body.ageFrom,
       ageTo: req.body.ageTo,
-      fee: req.body.fee,
-      grandTotal: req.body.grandTotal,
+      fee: parseInt(req.body.fee),
+      grandTotal: parseInt(req.body.grandTotal),
       instruction: req.body.instruction,
     };
     const survey = new Survey(newSurvey);
     const payList = await Payment.findOne({ user: req.user._id }).sort({
       createdAt: -1,
     });
+
     const payment = new Payment({
       description: req.body.description,
       type: "Debit",

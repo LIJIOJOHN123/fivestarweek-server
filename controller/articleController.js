@@ -473,7 +473,7 @@ exports.articleViewIpDetails = async (req, res) => {
     };
     const views = await ArticleViewIP(newView);
     await views.save();
-    article.viewIP.unshift(views._id);
+    await article.viewIP.unshift(views._id);
     await article.save();
     if (article.sponsor === AppConstant.SPONSOR.SPONSORED) {
       const aricleSponsore = await ArticleSponsor.findOne({
@@ -482,8 +482,9 @@ exports.articleViewIpDetails = async (req, res) => {
       aricleSponsore.guestViews.unshift(views._id);
       await aricleSponsore.save();
     }
-    res.send(views);
+    res.send({});
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -714,10 +715,6 @@ exports.getMobileFollowingMixed = async (req, res) => {
 
 exports.articleDetailStatitics = async (req, res) => {
   try {
-    // if (req.user.isPremium === false) {
-    //   res.status(404).send({ message: "You not not premium user" });
-    // }
-
     const article = await Article.findOne({
       _id: req.params.id,
     });
