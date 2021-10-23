@@ -25,7 +25,7 @@ const channelSchema = new Schema(
       type: String,
     },
     keywords: {
-      type: [],
+      type: String,
     },
     verifiedStatus: {
       type: Number,

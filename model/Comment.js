@@ -12,6 +12,10 @@ const CommentSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Article",
     },
+    channel: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Channel",
+    },
     title: {
       type: String,
     },

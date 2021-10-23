@@ -273,6 +273,7 @@ exports.surveyAccept = async (req, res) => {
         {
           _id: req.params.id,
           "result.user": req.user._id,
+          "result.surveyStatus": AppConstant.SURVEY_RESULT_STATUS.ACCEPT,
         },
         {
           $set: {

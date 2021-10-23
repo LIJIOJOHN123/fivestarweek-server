@@ -28,6 +28,7 @@ exports.addComment = async (req, res) => {
     comment.commentId = exportIdGenerator(25);
     const article = await Artcile.findOne({ _id: req.params.id });
     article.comments.push(comment._id);
+    comment.channel = article.channel;
     await comment.save();
     //notification
     const notification = new Notification({
@@ -296,6 +297,7 @@ exports.getCommentsByUser = async (req, res) => {
       user: req.user._id,
       status: AppConstant.COMMENT_STATUS.ACTIVE,
     })
+      .populate(["channel", "article"])
       .sort({ createdAt: -1 })
       .limit(parseInt(req.query.limit))
       .populate("article");
