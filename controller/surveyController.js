@@ -268,20 +268,29 @@ exports.surveyAccept = async (req, res) => {
       timeStart: Date.now(),
     };
     survey.result.unshift(newSurveyResult);
+
     await setTimeout(async () => {
-      const surveys = await Survey.findOneAndUpdate(
-        {
-          _id: req.params.id,
-          "result.user": req.user._id,
-          "result.surveyStatus": AppConstant.SURVEY_RESULT_STATUS.ACCEPT,
-        },
-        {
-          $set: {
-            "result.$.surveyStatus": AppConstant.SURVEY_RESULT_STATUS.ABANDON,
-          },
-        }
+      let sur = await Survey.findOne({
+        _id: req.params.id,
+        "result.user": req.user._id,
+      });
+      let results = sur.result.filter(
+        (item) => item.surveyStatus === AppConstant.SURVEY_RESULT_STATUS.ACCEPT
       );
-      await surveys.save();
+      if (results.length > 0) {
+        const surveys = await Survey.findOneAndUpdate(
+          {
+            _id: req.params.id,
+            "result.user": req.user._id,
+          },
+          {
+            $set: {
+              "result.$.surveyStatus": AppConstant.SURVEY_RESULT_STATUS.ABANDON,
+            },
+          }
+        );
+        await surveys.save();
+      }
     }, 7200000);
     await survey.save();
     res.send(survey);
