@@ -65,14 +65,11 @@ exports.getEmail = async (req, res) => {
           `,
           altText: "plain text",
         },
-        function (err, data, res) {
-          console.log(data);
-        }
+        function (err, data, res) {}
       );
     });
     res.send({ message: "send successfully" });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

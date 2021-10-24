@@ -323,23 +323,17 @@ exports.getArticlesById = async (req, res) => {
       status: AppConstant.ARTICLE_STATUS.ACTIVE,
       channel: article.channel._id,
     })
+      .populate("channel")
       .sort({ createdAt: -1 })
       .limit(8);
-    const relatedDiscussion = await Article.find({ link: article.link }).limit(
-      4
-    );
-    let sponsoredArticles = await ArticleSponsor.find({})
-      .populate("articleId")
-      .find({
-        status: AppConstant.ARTICLE_STATUS.ACTIVE,
-      })
-      .limit(4);
+    const relatedDiscussion = await Article.find({ link: article.link })
+      .limit(4)
+      .populate("channel");
 
     res.send({
       article,
       channelArticleList,
       relatedDiscussion,
-      sponsoredArticles,
     });
   } catch (error) {
     res.status(500).send(error);
@@ -484,7 +478,6 @@ exports.articleViewIpDetails = async (req, res) => {
     }
     res.send({});
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -834,7 +827,6 @@ exports.articleDetailStatitics = async (req, res) => {
       authVisit,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

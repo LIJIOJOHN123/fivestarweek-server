@@ -67,6 +67,7 @@ exports.search = async (req, res) => {
         { kewords: { $regex: search, $options: "i" } },
       ],
     })
+      .populate(["channel", "user"])
       .limit(parseInt(limit))
       .sort({ createdAt: -1 });
     // video
@@ -89,6 +90,7 @@ exports.search = async (req, res) => {
         { kewords: { $regex: search, $options: "i" } },
       ],
     })
+      .populate(["channel", "user"])
       .limit(parseInt(limits))
       .sort({ createdAt: -1 });
     // COMMENT
@@ -106,6 +108,7 @@ exports.search = async (req, res) => {
         { comment: { $regex: search, $options: "i" } },
       ],
     })
+      .populate(["user", "channel", "article"])
       .limit(parseInt(limiting))
       .sort({ createdAt: -1 });
     //channel
@@ -127,6 +130,7 @@ exports.search = async (req, res) => {
         { keywords: { $regex: search, $options: "i" } },
       ],
     })
+      .populate("user")
       .limit(parseInt(limited))
       .sort({ createdAt: -1 });
     res.send({
@@ -154,6 +158,7 @@ exports.presearch = async (req, res) => {
       status: AppConstant.CHANNEL_STATUS.ACTIVE,
       verifiedStatus: AppConstant.CHANNEL_VERIFICATION.VERIFIED,
     })
+      .populate("user")
       .sort({ createdAt: -1 })
       .limit(18);
     let channeOnline = channels.map((item) => item._id);
@@ -162,17 +167,20 @@ exports.presearch = async (req, res) => {
       type: "Article",
       channel: channeOnline,
     })
+      .populate(["channel", "user"])
       .sort({ createdAt: 1 })
       .limit(20);
     const videos = await Article.find({
       status: AppConstant.ARTICLE_STATUS.ACTIVE,
       type: "Video",
     })
+      .populate(["channel", "user"])
       .sort({ createdAt: 1 })
       .limit(20);
     const comments = await Comment.find({
       status: AppConstant.COMMENT_STATUS.ACTIVE,
     })
+      .populate(["article", "user", "channel"])
       .sort({ createdAt: -1 })
       .limit(21);
     res.send({ articles, videos, channels, comments });

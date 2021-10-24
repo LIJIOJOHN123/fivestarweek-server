@@ -31,19 +31,16 @@ exports.addpayment = async (req, res) => {
     Insta.createPayment(data, async (error, response) => {
       if (error) {
         // some error
-        console.log(error);
       } else {
-        console.log(response);
         // Payment redirection link at response.payment_request.longurl
         const responseData = JSON.parse(response);
 
         const redirectUrl = responseData.payment_request.longurl;
-        console.log(redirectUrl);
         res.send(redirectUrl);
       }
     });
   } catch (error) {
-    console.log(error);
+    res.status(500).send(error);
   }
 };
 
@@ -67,6 +64,6 @@ exports.payCallbackAPI = async (req, res) => {
       return res.redirect(`${process.env.CLIENT_URL}/payment`);
     }
   } catch (error) {
-    console.log(error);
+    res.status(500).send(error);
   }
 };

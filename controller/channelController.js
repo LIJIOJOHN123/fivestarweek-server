@@ -159,7 +159,6 @@ exports.addChannelImage = async (req, res) => {
       image: req.file.location,
       zoom: req.body.zoom || "100%",
     };
-    console.log(channelAvatart);
     channel.avatar.image = req.file.location;
     channel.avatar.zoom = req.file.zoom;
 
@@ -167,7 +166,6 @@ exports.addChannelImage = async (req, res) => {
     await channel.save();
     res.send(channel);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -497,7 +495,6 @@ exports.channelVisitDetailsAuth = async (req, res) => {
     await channel.save();
     res.send({});
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -557,7 +554,6 @@ exports.getSuggestedChannels = async (req, res) => {
     );
     res.send({ channels });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

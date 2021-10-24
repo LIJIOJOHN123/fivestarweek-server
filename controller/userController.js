@@ -29,7 +29,6 @@ const queryString = require("query-string");
 //status:@public
 
 exports.registartion = async (req, res) => {
-  console.log(req.body);
   try {
     const user = new User(req.body);
     const email = await User.findOne({ email: req.body.email });
@@ -151,7 +150,6 @@ exports.registartion = async (req, res) => {
       .status(201)
       .send({ user, token, message: "You have successfully logged in!" });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -475,7 +473,6 @@ exports.updateUserInfo = async (req, res) => {
       req.body.name.toLowerCase().charAt(0).toUpperCase() +
       req.body.name.slice(1);
   }
-  console.log(req.body.value);
   let userLanguage;
   if (req.body.value) {
     const firstLag = await Language.findOne({ _id: req.body.value });
@@ -568,7 +565,6 @@ exports.logoutAll = async (req, res) => {
 //status:@private
 exports.addProfileImage = async (req, res) => {
   try {
-    console.log(req.query.zoom);
     const user = await User.findOne({ _id: req.user._id });
     const profileAvatar = {
       image: req.file.location,
@@ -652,9 +648,7 @@ exports.emailVerificationToken = async (req, res) => {
           `,
         altText: "plain text",
       },
-      function (err, data, res) {
-        console.log(data);
-      }
+      function (err, data, res) {}
     );
     await req.user.save();
     res.send({ message: "OTP sent successfully" });
@@ -688,7 +682,6 @@ exports.emailVerify = async (req, res) => {
     await user.save();
     res.send({ message: "Your email has been verified successfully" });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

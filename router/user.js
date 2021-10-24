@@ -190,7 +190,6 @@ var uploads = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function (req, file, cb) {
-      console.log(file);
       const extendname = file.originalname.split(".");
       const fileName = extendname[extendname.length - 1];
       if (fileName === "jpeg" || fileName === "jpg" || fileName === "png") {

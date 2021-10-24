@@ -79,7 +79,6 @@ exports.createSurvey = async (req, res) => {
     await survey.save();
     res.send(survey);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -192,7 +191,6 @@ exports.surveyByIdEndUser = async (req, res) => {
       .populate(["country", "city", "state", "language"]);
     res.send({ survey, preference });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -206,7 +204,6 @@ exports.surveyAccept = async (req, res) => {
     const preference = await Preference.findOne({ user: req.user._id })
       .select(["-keyword", "-intersted", "-visited"])
       .populate(["country", "city", "state", "language"]);
-    console.log(survey.country.country);
     if (survey.country.country !== "All") {
       if (survey.country.toString() !== preference.country.toString()) {
         return res
@@ -249,7 +246,14 @@ exports.surveyAccept = async (req, res) => {
         message: "You do not meet survey qualification criteria.",
       });
     }
-    if (survey.result.length >= survey.participants) {
+    let surveyinprogress = await survey.result.filter(
+      (item) => item.surveyStatus === AppConstant.SURVEY_RESULT_STATUS.ACCEPT
+    );
+    let surveyComplted = await survey.result.filter(
+      (item) => item.surveyStatus === AppConstant.SURVEY_RESULT_STATUS.SUBMIT
+    );
+    let surveyCurrentAnswer = surveyinprogress.length + surveyComplted.length;
+    if (surveyCurrentAnswer > survey.participants) {
       return res
         .status(404)
         .send({ message: "Survey recieved enough response" });
@@ -295,7 +299,6 @@ exports.surveyAccept = async (req, res) => {
     await survey.save();
     res.send(survey);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -316,11 +319,17 @@ exports.surveyResponse = async (req, res) => {
         },
       }
     );
+    let surveys = await Survey.findOn({ _id: req.params.id });
+    let surveyComplted = await surveys.result.filter(
+      (item) => item.surveyStatus === AppConstant.SURVEY_RESULT_STATUS.SUBMIT
+    );
+    if (surveyComplted.length >= surveys.participants) {
+      surveys.status = AppConstant.SURVEY_STATUS.COMPLETED;
+      await surveys.save();
+    }
     await survey.save();
     res.send(survey);
   } catch (error) {
-    console.log(error);
-    s;
     res.status(500).send(error);
   }
 };
@@ -338,7 +347,6 @@ exports.surveyReturn = async (req, res) => {
         },
       }
     );
-    console.log(survey);
     await survey.save();
     res.send(survey);
   } catch (error) {
@@ -387,7 +395,6 @@ exports.suveyListEndUser = async (req, res) => {
     const surveys = await Survey.find({
       status: AppConstant.SURVEY_STATUS.APPROVE,
     }).sort({ createdAt: -1 });
-    console.log(surveys);
     res.send({ surveys });
   } catch (error) {
     res.status(500).send(error);

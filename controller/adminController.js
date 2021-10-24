@@ -551,7 +551,6 @@ exports.removeEarning = async (req, res) => {
     await earning.save();
     res.send(earning);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -606,7 +605,6 @@ exports.scoreList = async (req, res) => {
       .limit(parseInt(req.query.limit));
     res.send({ scoreList });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -1204,7 +1202,6 @@ exports.forcedChannelSponsorAdmin = async (req, res) => {
     await channel.save();
     res.send(sponsor);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -1219,7 +1216,6 @@ exports.channelAddInfo = async (req, res) => {
     await channel.save();
     res.send(channel);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

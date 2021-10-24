@@ -362,7 +362,6 @@ exports.sponsoreArticleById = async (req, res) => {
         $limit: 30,
       },
     ]);
-    console.log(viewIp);
     const viewsauth = await ArticleViewAuth.find({
       article: articleSponsore.articleId,
     }).countDocuments();
