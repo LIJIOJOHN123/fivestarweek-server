@@ -170,7 +170,7 @@ userRouter.post("/changepassword", authMiddleware, channgePassword);
 userRouter.post("/userpremium", authMiddleware, premuiumUser);
 userRouter.post("/emailverification", authMiddleware, emailVerificationToken);
 userRouter.post("/emailverifyonline", authMiddleware, emailVerify);
-userRouter.get("/callback/premium/:id", paymentCallbackAPI);
+userRouter.get("/callback/premium/:id/:amount", paymentCallbackAPI);
 userRouter.get("/callback/payment/:id/:amount", payCallbackAPI);
 
 aws.config.update({

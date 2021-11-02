@@ -189,6 +189,7 @@ exports.createChannelSponsor = async (req, res) => {
     await payment.save();
     await sponsor.save();
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };

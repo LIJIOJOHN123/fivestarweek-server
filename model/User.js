@@ -43,6 +43,16 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    premiumType: {
+      type: Number,
+      default: AppConstant.PREMIUM_TYPE.NORMAL,
+      enum: [
+        AppConstant.PREMIUM_TYPE.NORMAL,
+        AppConstant.PREMIUM_TYPE.SILVER,
+        AppConstant.PREMIUM_TYPE.GOLD,
+        AppConstant.PREMIUM_TYPE.DIAMOND,
+      ],
+    },
     emailOTP: {
       type: Number,
     },

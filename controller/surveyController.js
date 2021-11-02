@@ -240,8 +240,8 @@ exports.surveyAccept = async (req, res) => {
       }
     }
     const currentDate = new Date();
-    const userAge = currentDate.getFullYear - preference.year;
-    if (survey.ageFrom <= userAge || survey.ageTo >= userAge) {
+    const userAge = parseInt(currentDate.getFullYear() - preference.year);
+    if (survey.ageFrom >= userAge || survey.ageTo <= userAge) {
       return res.status(404).send({
         message: "You do not meet survey qualification criteria.",
       });
@@ -253,7 +253,9 @@ exports.surveyAccept = async (req, res) => {
       (item) => item.surveyStatus === AppConstant.SURVEY_RESULT_STATUS.SUBMIT
     );
     let surveyCurrentAnswer = surveyinprogress.length + surveyComplted.length;
-    if (surveyCurrentAnswer > survey.participants) {
+    console.log(surveyCurrentAnswer, survey.participants);
+    surveyCurrentAnswer >= survey.participants;
+    if (surveyCurrentAnswer >= survey.participants) {
       return res
         .status(404)
         .send({ message: "Survey recieved enough response" });
@@ -319,7 +321,7 @@ exports.surveyResponse = async (req, res) => {
         },
       }
     );
-    let surveys = await Survey.findOn({ _id: req.params.id });
+    let surveys = await Survey.findOne({ _id: req.params.id });
     let surveyComplted = await surveys.result.filter(
       (item) => item.surveyStatus === AppConstant.SURVEY_RESULT_STATUS.SUBMIT
     );
@@ -330,6 +332,7 @@ exports.surveyResponse = async (req, res) => {
     await survey.save();
     res.send(survey);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };

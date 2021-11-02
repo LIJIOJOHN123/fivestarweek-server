@@ -92,5 +92,11 @@ class AppConstant {
     SUBMIT: 4,
     ABANDON: 5,
   };
+  static PREMIUM_TYPE = {
+    NORMAL: 0,
+    SILVER: 1,
+    GOLD: 2,
+    DIAMOND: 3,
+  };
 }
 module.exports = AppConstant;

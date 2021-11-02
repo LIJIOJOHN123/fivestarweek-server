@@ -54,9 +54,16 @@ exports.createChannel = async (req, res) => {
   try {
     const channel = new Channel(newChannel);
     channel.channelId = exportIdGenerator(25);
+    if (
+      req.user.premiumType == AppConstant.PREMIUM_TYPE.DIAMOND ||
+      req.user.premiumType == AppConstant.PREMIUM_TYPE.GOLD
+    ) {
+      channel.verifiedStatus = AppConstant.CHANNEL_VERIFICATION.VERIFIED;
+    }
     await channel.save();
     res.send(channel);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };

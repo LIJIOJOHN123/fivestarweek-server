@@ -21,6 +21,7 @@ const moment = require("moment");
 const Payment = require("../model/Payment");
 const url = require("url");
 const queryString = require("query-string");
+const AppConstant = require("../config/appConstants");
 
 /********************* Guest users  *******************/
 
@@ -587,11 +588,12 @@ exports.premuiumUser = async (req, res) => {
   try {
     Insta.setKeys(process.env.PAYMENT_API_KEY, process.env.PAYMENT_AUTH_KEY);
     var data = new Insta.PaymentData();
+    console.log(req.body.amount);
     Insta.isSandboxMode(true);
     data.purpose = req.body.purpose;
     data.amount = req.body.amount;
     data.buyer_name = req.user.name;
-    data.redirect_url = `${process.env.SERVER_URL}/callback/premium/${req.user._id}`;
+    data.redirect_url = `${process.env.SERVER_URL}/callback/premium/${req.user._id}/${req.body.amount}`;
     data.email = req.user.email;
     data.phone = req.user.mobile;
     data.send_email = false;
@@ -607,6 +609,7 @@ exports.premuiumUser = async (req, res) => {
         // Payment redirection link at response.payment_request.longurl
         const responseData = JSON.parse(response);
         const redirectUrl = responseData.payment_request.longurl;
+
         res.send(redirectUrl);
       }
     });
@@ -618,8 +621,60 @@ exports.paymentCallbackAPI = async (req, res) => {
     if (req.query.payment_id) {
       const user = await User.findOneAndUpdate({ _id: req.params.id });
       user.isPremium = true;
+
       user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
+      console.log(req.params.amount == "999");
+      if (req.params.amount == "199") {
+        const scorePrev = await Score.findOne({
+          user: req.params.id,
+        }).sort({
+          createdAt: -1,
+        });
+        const userScore = new Score({
+          user: req.params.id,
+          activity: "Premium",
+          description: `Congradulation- Added 350 points for choosing silver premium plan`,
+          mode: "Credit",
+          points: 350,
+          totalScore: scorePrev === null ? 350 : scorePrev.totalScore + 350,
+        });
+        await userScore.save();
+        user.premiumType = AppConstant.PREMIUM_TYPE.SILVER;
+      } else if (req.params.amount == "499") {
+        const scorePrev = await Score.findOne({
+          user: req.params.id,
+        }).sort({
+          createdAt: -1,
+        });
+        const userScore = new Score({
+          user: req.params.id,
+          activity: "Premium",
+          description: `Congradulation- Added 1000 points for choosing gold premium plan`,
+          mode: "Credit",
+          points: 1000,
+          totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 1000,
+        });
+        await userScore.save();
+        user.premiumType = AppConstant.PREMIUM_TYPE.GOLD;
+      } else if (req.params.amount == "999") {
+        const scorePrev = await Score.findOne({
+          user: req.params.id,
+        }).sort({
+          createdAt: -1,
+        });
+        const userScore = new Score({
+          user: req.params.id,
+          activity: "Premium",
+          description: `Congradulation- Added 2500 points for choosing diamond premium plan`,
+          mode: "Credit",
+          points: 2500,
+          totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 2500,
+        });
+        await userScore.save();
+        user.premiumType = AppConstant.PREMIUM_TYPE.DIAMOND;
+      }
       await user.save();
+
       // Redirect the user to payment complete page.
       return res.redirect(`${process.env.CLIENT_URL}/profile`);
     }
