@@ -19,9 +19,13 @@ const City = require("../model/City");
 var Insta = require("instamojo-nodejs");
 const moment = require("moment");
 const Payment = require("../model/Payment");
+const Survey = require("../model/Survey");
+
 const url = require("url");
 const queryString = require("query-string");
 const AppConstant = require("../config/appConstants");
+const ChannelSponsor = require("../model/SponsorChannel");
+const ArticleSponsor = require("../model/SponsorArticle");
 
 /********************* Guest users  *******************/
 
@@ -424,18 +428,34 @@ exports.getPublicProfile = async (req, res) => {
     const score = await Score.findOne({ user: req.params.id }).sort({
       createdAt: -1,
     });
+    const commentsCount = await Comment.find({
+      user: user._id,
+    }).countDocuments();
+    const surveyCount = await Survey.find({
+      user: user._id,
+    }).countDocuments();
+    const channelAdCount = await ChannelSponsor.find({
+      user: user._id,
+    }).countDocuments();
+    const articleAdCount = await ArticleSponsor.find({
+      user: user._id,
+    }).countDocuments();
     const preference = await Preference.findOne({ user: req.user._id })
       .select(["-keyword", "-intersted", "-visited"])
       .populate(["country", "city", "state", "language"]);
     res.send({
       user,
       channelCount,
+      surveyCount,
       commentCount,
+      channelAdCount,
+      articleAdCount,
       articleCount,
       earn,
       payment,
       score,
       preference,
+      commentsCount,
     });
   } catch (error) {}
 };

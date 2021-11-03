@@ -299,8 +299,7 @@ exports.getCommentsByUser = async (req, res) => {
     })
       .populate(["channel", "article"])
       .sort({ createdAt: -1 })
-      .limit(parseInt(req.query.limit))
-      .populate("article");
+      .limit(parseInt(req.query.limit));
     res.send({ commentCount, comments });
   } catch (error) {
     res.status(500).send(error);
