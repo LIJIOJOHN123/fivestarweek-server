@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken");
 const Earning = require("../model/Earning");
 const Country = require("../model/Country");
 const State = require("../model/State");
-const City = require("../model/City");
 const Language = require("../model/Language");
 const Preference = require("../model/Preference");
 exports.createSurvey = async (req, res) => {
@@ -23,13 +22,7 @@ exports.createSurvey = async (req, res) => {
   } else {
     stateSelect = req.body.state;
   }
-  let citySelect;
-  if (req.body.city === "All") {
-    const cityAlone = await City.findOne({ city: "All" });
-    citySelect = cityAlone._id;
-  } else {
-    citySelect = req.body.city;
-  }
+
   let languageSelect;
   if (req.body.language === "All") {
     const languageAlone = await Language.findOne({ language: "English" });
@@ -48,7 +41,6 @@ exports.createSurvey = async (req, res) => {
       country: countrySelect,
       state: stateSelect,
       language: languageSelect,
-      city: citySelect,
       perSurveyPrice: req.body.perSurveyPrice,
       total: parseInt(req.body.total),
       ageFrom: req.body.ageFrom,
@@ -175,7 +167,7 @@ exports.surveyByIdCreatedUser = async (req, res) => {
     const survey = await Survey.findOne({
       _id: req.params.id,
       user: req.user._id,
-    }).populate(["country", "city", "state", "language"]);
+    }).populate(["country", "state", "language"]);
     res.send(survey);
   } catch (error) {
     res.status(500).send(error);
@@ -185,10 +177,10 @@ exports.surveyByIdEndUser = async (req, res) => {
   try {
     const survey = await Survey.findOne({
       _id: req.params.id,
-    }).populate(["country", "city", "state", "language"]);
+    }).populate(["country", "state", "language"]);
     const preference = await Preference.findOne({ user: req.user._id })
       .select(["-keyword", "-intersted", "-visited"])
-      .populate(["country", "city", "state", "language"]);
+      .populate(["country", "state", "language"]);
     res.send({ survey, preference });
   } catch (error) {
     res.status(500).send(error);
@@ -200,10 +192,10 @@ exports.surveyAccept = async (req, res) => {
   try {
     const survey = await Survey.findOne({
       _id: req.params.id,
-    }).populate(["country", "city", "state", "language"]);
+    }).populate(["country", "state", "language"]);
     const preference = await Preference.findOne({ user: req.user._id })
       .select(["-keyword", "-intersted", "-visited"])
-      .populate(["country", "city", "state", "language"]);
+      .populate(["country", "state", "language"]);
     if (survey.country.country !== "All") {
       if (survey.country.toString() !== preference.country.toString()) {
         return res

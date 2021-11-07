@@ -9,7 +9,6 @@ const ChannelViewAuth = require("../model/ChannelViewAuth");
 const ChannelViewIP = require("../model/ChannelViewIP");
 const ChannelVisitAuth = require("../model/ChannelVisitorAuth");
 const ChannelVisitIP = require("../model/ChannelVisitorIP");
-const City = require("../model/City");
 const Country = require("../model/Country");
 const Payment = require("../model/Payment");
 const ArticleSponsor = require("../model/SponsorArticle");
@@ -39,13 +38,7 @@ exports.createArticleSponsor = async (req, res) => {
   } else {
     stateSelect = req.body.state;
   }
-  let citySelect;
-  if (req.body.city === "All") {
-    const cityAlone = await City.findOne({ city: "All" });
-    citySelect = cityAlone._id;
-  } else {
-    citySelect = req.body.city;
-  }
+
   let languageSelect;
   if (req.body.language === "All") {
     const languageAlone = await Language.findOne({ language: "English" });
@@ -63,7 +56,6 @@ exports.createArticleSponsor = async (req, res) => {
       country: countrySelect,
       state: stateSelect,
       language: languageSelect,
-      city: citySelect,
       estimate: req.body.estimate,
       ageFrom: req.body.ageFrom,
       ageTo: req.body.ageTo,
@@ -133,17 +125,15 @@ exports.createChannelSponsor = async (req, res) => {
   let stateSelect;
   if (req.body.state === "All") {
     const stateAlone = await State.findOne({ state: "All" });
+    if (!stateAlone) {
+      let newState = new State({ state: "All" });
+      await newState.save();
+    }
     stateSelect = stateAlone._id;
   } else {
     stateSelect = req.body.state;
   }
-  let citySelect;
-  if (req.body.city === "All") {
-    const cityAlone = await City.findOne({ city: "All" });
-    citySelect = cityAlone._id;
-  } else {
-    citySelect = req.body.city;
-  }
+
   let languageSelect;
   if (req.body.language === "All") {
     const languageAlone = await Language.findOne({ language: "English" });
@@ -160,7 +150,6 @@ exports.createChannelSponsor = async (req, res) => {
       country: countrySelect,
       state: stateSelect,
       language: languageSelect,
-      city: citySelect,
       estimate: req.body.estimate,
       ageFrom: req.body.ageFrom,
       ageTo: req.body.ageTo,
@@ -232,8 +221,7 @@ exports.cityList = async (req, res) => {
   try {
     const country = await Country.findOne({ _id: req.params.id });
     const state = await State.findOne({ _id: req.params.sid });
-    const city = await City.find({ state: req.params.sid });
-    res.send({ country, state, city });
+    res.send({ country, state });
   } catch (error) {
     res.status(500).send(error);
   }
@@ -268,7 +256,7 @@ exports.sponsoreChannelById = async (req, res) => {
     const channelSponsore = await ChannelSponsor.findOne({
       _id: req.params.id,
       user: req.user._id,
-    }).populate(["country", "city", "state", "language"]);
+    }).populate(["country", "state", "language"]);
     const channel = await Channel.findOne({ _id: channelSponsore.channelId });
     //viewauth
     const viewIp = await ChannelViewIP.aggregate([
@@ -333,7 +321,7 @@ exports.sponsoreArticleById = async (req, res) => {
     const articleSponsore = await ArticleSponsor.findOne({
       _id: req.params.id,
       user: req.user._id,
-    }).populate(["country", "city", "state", "language"]);
+    }).populate(["country", "state", "language"]);
     const article = await Article.findOne({
       _id: articleSponsore.articleId,
     });
@@ -435,14 +423,13 @@ exports.articleSponsorePublic = async (req, res) => {
     const sponsoreArticles = await ArticleSponsor.find({
       status: AppConstant.SPONSOR.SPONSORED,
     })
-      .populate(["country", "city", "state", "language", "articleId"])
+      .populate(["country", "state", "language", "articleId"])
       .limit(parseInt(req.query.limit));
     //guest user
     const sponsoreArts = sponsoreArticles.filter((item) => {
       if (
         item.country.country === "All" &&
         item.state.state === "All" &&
-        item.city.city === "All" &&
         item.ageFrom >= 12 &&
         item.ageTo <= 100 &&
         item.gender === "All" &&
@@ -456,12 +443,11 @@ exports.articleSponsorePublic = async (req, res) => {
       //auth user
       const preference = await Preference.findOne({ user: req.user._id })
         .select(["-keyword", "-intersted", "-visited"])
-        .populate(["country", "city", "state", "language"]);
+        .populate(["country", "state", "language"]);
       sponsoreArtsAuthUser = sponsoreArticles.filter((item) => {
         if (
           item.country.country === "All" &&
           item.state.state === "All" &&
-          item.city.city === "All" &&
           item.ageFrom === 12 &&
           item.ageTo === 100 &&
           item.gender === "All"
@@ -475,8 +461,6 @@ exports.articleSponsorePublic = async (req, res) => {
               item.country.country === "All") &&
             (preference.state.state === item.state.state ||
               item.state.state === "All") &&
-            (preference.city.city === item.city.city ||
-              item.city.city === "All") &&
             (preference.language.language === item.language.language ||
               item.language.language === "English") &&
             (userAge >= item.ageFrom || item.ageFrom >= 12) &&
@@ -510,14 +494,13 @@ exports.channleSponsorePublic = async (req, res) => {
     const sponsoreChannels = await ChannelSponsor.find({
       status: AppConstant.SPONSOR.SPONSORED,
     })
-      .populate(["country", "city", "state", "language", "channelId"])
+      .populate(["country", "state", "language", "channelId"])
       .limit(parseInt(req.query.limit));
     //guest user
     const sponsoreChann = sponsoreChannels.filter((item) => {
       if (
         item.country.country === "All" &&
         item.state.state === "All" &&
-        item.city.city === "All" &&
         item.ageFrom >= 12 &&
         item.ageTo <= 100 &&
         item.gender === "All" &&
@@ -531,12 +514,11 @@ exports.channleSponsorePublic = async (req, res) => {
       //auth user
       const preference = await Preference.findOne({ user: req.user._id })
         .select(["-keyword", "-intersted", "-visited"])
-        .populate(["country", "city", "state", "language"]);
+        .populate(["country", , "state", "language"]);
       sponsoreChannAuthUser = sponsoreChannels.filter((item) => {
         if (
           item.country.country === "All" &&
           item.state.state === "All" &&
-          item.city.city === "All" &&
           item.ageFrom === 12 &&
           item.ageTo === 100 &&
           item.gender === "All"
@@ -550,8 +532,6 @@ exports.channleSponsorePublic = async (req, res) => {
               item.country.country === "All") &&
             (preference.state.state === item.state.state ||
               item.state.state === "All") &&
-            (preference.city.city === item.city.city ||
-              item.city.city === "All") &&
             (preference.language.language === item.language.language ||
               item.language.language === "English") &&
             (userAge >= item.ageFrom || item.ageFrom >= 12) &&

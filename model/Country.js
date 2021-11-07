@@ -12,6 +12,9 @@ const countrySchema = new Schema(
     phoneCode: {
       type: String,
     },
+    ids: {
+      type: Number,
+    },
   },
 
   { timestamps: true }

@@ -430,7 +430,6 @@ exports.articleViewDetailsAuth = async (req, res) => {
       article: req.params.id,
       country: req.body.country,
       state: req.body.region,
-      city: req.body.city,
       keywords: article.keywords.toString(),
     };
     const visitedArticle = new ArticleViewAuth(newView);
@@ -462,7 +461,6 @@ exports.articleViewIpDetails = async (req, res) => {
       article: req.params.id,
       country: req.body.country,
       state: req.body.region,
-      city: req.body.city,
       keywords: article.keywords.toString(),
     };
     const views = await ArticleViewIP(newView);
@@ -495,7 +493,6 @@ exports.articleVisitDetailsAuth = async (req, res) => {
       article: req.params.id,
       country: req.body.country,
       state: req.body.region,
-      city: req.body.city,
       keywords: article.keywords.toString(),
     };
     const visitedArticle = new ArticleVisitAuth(newView);
@@ -585,7 +582,6 @@ exports.articleVisitIpDetails = async (req, res) => {
       article: req.params.id,
       country: req.body.country,
       state: req.body.region,
-      city: req.body.city,
       keywords: article.keywords.toString(),
     };
     const views = await ArticleVisitIP(newView);

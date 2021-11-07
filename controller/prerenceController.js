@@ -11,7 +11,6 @@ exports.adduserlocationpreference = async (req, res) => {
       newPrefernce.dateOfBirth = req.body.dateOfBirth;
       newPrefernce.country = req.body.country;
       newPrefernce.state = req.body.region;
-      newPrefernce.city = req.body.city;
       //need to verify channels
       newPrefernce.intersted.unshift(req.body.channelKeyword);
       await newPrefernce.save();
@@ -22,7 +21,6 @@ exports.adduserlocationpreference = async (req, res) => {
       preference.dateOfBirth = req.body.dateOfBirth;
       preference.country = req.body.country;
       preference.state = req.body.region;
-      preference.city = req.body.city;
       //need to verify channel
       preference.intersted.unshift(req.body.channelKeyword);
       await preference.save();

@@ -424,7 +424,6 @@ exports.channelViewDetailsAuth = async (req, res) => {
       channel: req.params.id,
       country: req.body.country,
       state: req.body.region,
-      city: req.body.city,
       keywords: channel.keywords.toString(),
     };
     const visitedChannel = new ChannelViewAuth(newView);
@@ -455,7 +454,6 @@ exports.channelViewIpDetails = async (req, res) => {
       channel: req.params.id,
       country: req.body.country,
       state: req.body.region,
-      city: req.body.city,
       keywords: channel.keywords.toString(),
     };
     const views = await ChannelViewIP(newView);
@@ -487,7 +485,6 @@ exports.channelVisitDetailsAuth = async (req, res) => {
       channel: req.params.id,
       country: req.body.country,
       state: req.body.region,
-      city: req.body.city,
       keywords: channel.keywords.toString(),
     };
     const visitedChannel = new ChannelVisitAuth(newView);
@@ -518,7 +515,6 @@ exports.channelVisitIpDetails = async (req, res) => {
       channel: req.params.id,
       country: req.body.country,
       state: req.body.region,
-      city: req.body.city,
       keywords: channel.keywords.toString(),
     };
     const views = await ChannelVisitIP(newView);
@@ -541,7 +537,7 @@ exports.getSuggestedChannels = async (req, res) => {
   try {
     const preference = await Preference.findOne({ user: req.user._id })
       .select(["-keyword", "-intersted", "-visited"])
-      .populate(["country", "city", "state", "language"]);
+      .populate(["country", "state", "language"]);
     const channel = await Channel.find({
       language: preference.language._id,
     }).limit(parseInt(req.query.limit));
@@ -561,6 +557,7 @@ exports.getSuggestedChannels = async (req, res) => {
     );
     res.send({ channels });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };

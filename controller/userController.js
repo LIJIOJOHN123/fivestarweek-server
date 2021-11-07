@@ -15,7 +15,6 @@ const Notification = require("../model/Notification");
 const Preference = require("../model/Preference");
 const Country = require("../model/Country");
 const State = require("../model/State");
-const City = require("../model/City");
 var Insta = require("instamojo-nodejs");
 const moment = require("moment");
 const Payment = require("../model/Payment");
@@ -71,37 +70,24 @@ exports.registartion = async (req, res) => {
         ref.usersRefered.unshift(user._id);
       }
     }
-    let country = await Country.findOne({ country: req.body.country });
-    if (!country) {
-      const addList = new Country({ country: req.body.country });
-      await addList.save();
-      country = addList;
+    let country;
+    if (req.body.country === "All" || req.body.country === undefined) {
+      country = await Country.findOne({ country: "All" });
+    } else {
+      country = await Country.findOne({ _id: req.body.country });
     }
-    let state = await State.findOne({ state: req.body.region });
-    if (!state) {
-      const addList = new State({
-        state: req.body.region,
-        country: country._id,
-      });
-      await addList.save();
-      state = addList;
+    console.log(country);
+    let state;
+    if (req.body.state === "All" || req.body.state === undefined) {
+      state = await State.findOne({ state: "All" });
+    } else {
+      state = await State.findOne({ _id: req.body.state });
     }
-    let city = await City.findOne({ city: req.body.city });
-    if (!city) {
-      const addList = new City({
-        country: country._id,
-        city: req.body.city,
-        state: state._id,
-      });
-      await addList.save();
-      city = addList;
-    }
-
+    console.log(state);
     const prefer = new Preference({
       user: user._id,
       country: country._id,
       state: state._id,
-      city: city._id,
       date: req.body.date,
       month: req.body.month,
       year: req.body.year,
@@ -155,6 +141,7 @@ exports.registartion = async (req, res) => {
       .status(201)
       .send({ user, token, message: "You have successfully logged in!" });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -442,7 +429,7 @@ exports.getPublicProfile = async (req, res) => {
     }).countDocuments();
     const preference = await Preference.findOne({ user: req.user._id })
       .select(["-keyword", "-intersted", "-visited"])
-      .populate(["country", "city", "state", "language"]);
+      .populate(["country", "state", "language"]);
     res.send({
       user,
       channelCount,
@@ -643,7 +630,6 @@ exports.paymentCallbackAPI = async (req, res) => {
       user.isPremium = true;
 
       user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
-      console.log(req.params.amount == "999");
       if (req.params.amount == "199") {
         const scorePrev = await Score.findOne({
           user: req.params.id,
@@ -661,6 +647,7 @@ exports.paymentCallbackAPI = async (req, res) => {
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.SILVER;
       } else if (req.params.amount == "499") {
+        user.isVerified = true;
         const scorePrev = await Score.findOne({
           user: req.params.id,
         }).sort({
@@ -677,6 +664,7 @@ exports.paymentCallbackAPI = async (req, res) => {
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.GOLD;
       } else if (req.params.amount == "999") {
+        user.isVerified = true;
         const scorePrev = await Score.findOne({
           user: req.params.id,
         }).sort({

@@ -689,7 +689,6 @@ exports.addChannelDetails = async (req, res) => {
     (channel.language = req.body.language),
       (channel.country = req.body.country),
       (channel.state = req.body.state),
-      (channel.city = req.body.city),
       (channel.keyword = req.body.keyword);
     channel.category = req.body.category;
     channel.subcategory = req.body.subcategory;
@@ -904,7 +903,7 @@ exports.editChannelSponsore = async (req, res) => {
     "estimate",
     "country",
     "state",
-    "city",
+
     "gender",
     "status",
     "ageFrom",
@@ -934,7 +933,7 @@ exports.editArticleSponsore = async (req, res) => {
     "estimate",
     "country",
     "state",
-    "city",
+
     "gender",
     "status",
     "ageFrom",
