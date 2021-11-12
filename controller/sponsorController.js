@@ -514,7 +514,7 @@ exports.channleSponsorePublic = async (req, res) => {
       //auth user
       const preference = await Preference.findOne({ user: req.user._id })
         .select(["-keyword", "-intersted", "-visited"])
-        .populate(["country", , "state", "language"]);
+        .populate(["country", "state", "language"]);
       sponsoreChannAuthUser = sponsoreChannels.filter((item) => {
         if (
           item.country.country === "All" &&
@@ -543,7 +543,7 @@ exports.channleSponsorePublic = async (req, res) => {
         }
       });
     }
-
+    console.log(sponsoreChannAuthUser);
     const channelguests = await sponsoreChann.map((item) => item.channelId);
     const channelsId = await sponsoreChannAuthUser.map(
       (item) => item.channelId

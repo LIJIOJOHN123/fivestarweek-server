@@ -59,9 +59,31 @@ exports.withdrawEarnings = async (req, res) => {
       description: req.body.description,
       amount: req.body.amount,
       status: false,
-      balance: earn.balance,
+      balance: earn.balance - parseInt(req.body.amount),
     };
     const newEarn = new Earning(newpayment);
+    var ses = require("node-ses"),
+      client = ses.createClient({
+        key: process.env.AWS_KEY,
+        secret: process.env.AWS_SCECRET_KEY,
+      });
+
+    client.sendEmail(
+      {
+        cc: [`${email}`],
+        from: process.env.SESFROMMAIL,
+        subject: "FiveStarWeek withdrawal",
+        message: `   <p>Hi ${user.name},</p> <br/>
+          <h4>Withawal request</h4>
+          <br/>
+          <p>We would like to inform your that we have recieved your withdrwal request. Your request will be processed soon.</p>
+          `,
+        altText: "plain text",
+      },
+      function (err, data, res) {
+        // ...
+      }
+    );
     await newEarn.save();
     res.send(newEarn);
   } catch (error) {

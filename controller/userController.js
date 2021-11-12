@@ -293,11 +293,13 @@ exports.forgotPassword = async (req, res) => {
       {
         cc: [`${email}`],
         from: process.env.SESFROMMAIL,
-        subject: "Forgot Password",
+        subject: "FiveStarWeek password assistance",
         message: `   <p>Hi ${user.name},</p> <br/>
-          <h4>Please click <a href=${link}>Click here<a/> to reset your password</h4>
+          <h4>Please click <button> <a href=${link}>Click here<a/></button> to reset your password</h4>
           <br/>
           <p>NB: This link expire after 10 minute.</p>
+           <br/>
+          <p>NB:Don't share  above link with anyone. Our customer service team will never ask you for your password, OTP, credit card, or banking info.</p>
           `,
         altText: "plain text",
       },

@@ -238,7 +238,7 @@ exports.likeArticle = async (req, res) => {
     const article = await Article.findOne({
       _id: req.params.id,
       status: AppConstant.ARTICLE_STATUS.ACTIVE,
-    });
+    }).populate(["channel", "user"]);
     if (
       article.likes.filter(
         (like) => like.user.toString() === req.user._id.toString()
@@ -290,7 +290,7 @@ exports.unlikeArticle = async (req, res) => {
     const article = await Article.findOne({
       _id: req.params.id,
       status: AppConstant.ARTICLE_STATUS.ACTIVE,
-    });
+    }).populate(["channel", "user"]);
     if (
       article.likes.filter(
         (like) => like.user.toString() === req.user._id.toString()
@@ -531,7 +531,7 @@ exports.articleVisitDetailsAuth = async (req, res) => {
         description: `You have viewed 100 articles`,
         mode: "Credit",
         points: 5,
-        totalScore: scorePrev === null ? 5 : scorePrev.totalScore + 5,
+        totalScore: parseInt(scorePrev.totalScore) + 5,
       });
       await userScore.save();
     }
