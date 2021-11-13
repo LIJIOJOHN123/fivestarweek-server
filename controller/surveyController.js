@@ -210,13 +210,7 @@ exports.surveyAccept = async (req, res) => {
           .send({ message: "You do not meet survey qualification criteria." });
       }
     }
-    if (survey.city.city !== "All") {
-      if (survey.city.toString() !== preference.city.toString()) {
-        return res.status(404).send({
-          message: "You do not meet survey qualification criteria.",
-        });
-      }
-    }
+
     if (survey.language.language !== "English") {
       if (survey.language.toString() !== preference.language.toString()) {
         return res.status(404).send({
@@ -231,6 +225,7 @@ exports.surveyAccept = async (req, res) => {
         });
       }
     }
+
     const currentDate = new Date();
     const userAge = parseInt(currentDate.getFullYear() - preference.year);
     if (survey.ageFrom >= userAge || survey.ageTo <= userAge) {
@@ -293,6 +288,7 @@ exports.surveyAccept = async (req, res) => {
     await survey.save();
     res.send(survey);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
