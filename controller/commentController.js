@@ -297,7 +297,7 @@ exports.getCommentsByUser = async (req, res) => {
       user: req.user._id,
       status: AppConstant.COMMENT_STATUS.ACTIVE,
     })
-      .populate(["channel", "article"])
+      .populate(["channel", "article", "user"])
       .sort({ createdAt: -1 })
       .limit(parseInt(req.query.limit));
     res.send({ commentCount, comments });
