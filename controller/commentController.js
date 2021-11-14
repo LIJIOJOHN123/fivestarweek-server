@@ -320,7 +320,7 @@ exports.getPublicCommentByUser = async (req, res) => {
     })
       .sort({ createdAt: -1 })
       .limit(parseInt(req.query.limit))
-      .populate("article");
+      .populate(["article", "user"]);
     res.send({ commentCount, comments });
   } catch (error) {
     res.status(500).send(error);
