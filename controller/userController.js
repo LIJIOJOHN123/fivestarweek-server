@@ -628,15 +628,34 @@ exports.paymentCallbackAPI = async (req, res) => {
   try {
     if (req.query.payment_id) {
       const user = await User.findOneAndUpdate({ _id: req.params.id });
-      user.isPremium = true;
 
-      user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
       if (req.query.payment_id === user.premiumId) {
         return res
           .status(404)
           .send({ message: "Please verify your transaction" });
       }
       user.premiumId = req.query.payment_id;
+      user.isPremium = true;
+      user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
+      var ses = require("node-ses"),
+        client = ses.createClient({
+          key: process.env.AWS_KEY,
+          secret: process.env.AWS_SCECRET_KEY,
+        });
+      client.sendEmail(
+        {
+          cc: [`${user.email}`],
+          from: process.env.SESFROMMAIL,
+          subject: "Premium user",
+          message: `   <p>Hi ,</p> <br/>
+          <h4>Congradulation! You have become premium user</h4>
+          <br/>
+          <p>Thank you so much for the subscription.</p>
+          `,
+          altText: "plain text",
+        },
+        function (err, data, res) {}
+      );
 
       if (req.params.amount == "199") {
         const scorePrev = await Score.findOne({
