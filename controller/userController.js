@@ -627,16 +627,15 @@ exports.premuiumUser = async (req, res) => {
 exports.paymentCallbackAPI = async (req, res) => {
   try {
     if (req.query.payment_id) {
-      const user = await User.findOneAndUpdate({ _id: req.params.id });
-
+      const user = await User.findByIdAndUpdate({ _id: req.params.id });
+      user.premiumId = req.query.payment_id;
+      user.isPremium = true;
+      user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
       if (req.query.payment_id === user.premiumId) {
         return res
           .status(404)
           .send({ message: "Please verify your transaction" });
       }
-      user.premiumId = req.query.payment_id;
-      user.isPremium = true;
-      user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
       var ses = require("node-ses"),
         client = ses.createClient({
           key: process.env.AWS_KEY,
