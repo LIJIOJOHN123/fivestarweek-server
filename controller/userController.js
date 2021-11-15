@@ -597,7 +597,6 @@ exports.premuiumUser = async (req, res) => {
   try {
     Insta.setKeys(process.env.PAYMENT_API_KEY, process.env.PAYMENT_AUTH_KEY);
     var data = new Insta.PaymentData();
-    console.log(req.body.amount);
     Insta.isSandboxMode(true);
     data.purpose = req.body.purpose;
     data.amount = req.body.amount;
@@ -632,6 +631,13 @@ exports.paymentCallbackAPI = async (req, res) => {
       user.isPremium = true;
 
       user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
+      if (req.query.payment_id === user.premiumId) {
+        return res
+          .status(404)
+          .send({ message: "Please verify your transaction" });
+      }
+      user.premiumId = req.query.payment_id;
+
       if (req.params.amount == "199") {
         const scorePrev = await Score.findOne({
           user: req.params.id,

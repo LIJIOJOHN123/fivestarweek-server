@@ -10,6 +10,9 @@ const paymentSchema = new Schema(
     description: {
       type: String,
     },
+    payId: {
+      type: String,
+    },
     type: {
       type: String,
       default: "Debit",

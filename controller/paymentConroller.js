@@ -52,7 +52,14 @@ exports.payCallbackAPI = async (req, res) => {
         type: "Credit",
         amount: parseInt(req.params.amount),
         user: req.params.id,
+        payId: req.query.payment_id,
       });
+      const duplicate = await Payment.findOne({ payId: req.query.payment_id });
+      if (duplicate) {
+        return res
+          .status(404)
+          .send({ message: "Please verify your transaction" });
+      }
       const paymentLast = await Payment.findOne({
         user: req.params.id,
       }).sort({ createdAt: -1 });

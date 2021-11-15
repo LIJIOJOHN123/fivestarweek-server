@@ -59,6 +59,9 @@ const UserSchema = new Schema(
     premiumDate: {
       type: String,
     },
+    premiumId: {
+      type: String,
+    },
     userDocumentVerfication: {
       type: Number,
       default: AppConstant.USER_DOCUMENT_VERIFICATION.REGISTED,
