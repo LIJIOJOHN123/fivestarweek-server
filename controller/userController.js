@@ -72,14 +72,14 @@ exports.registartion = async (req, res) => {
     }
     let country;
     if (req.body.country === "All" || req.body.country === undefined) {
-      country = await Country.findOne({ country: "All" });
+      country = await Country.findOne({ country: "India" });
     } else {
       country = await Country.findOne({ _id: req.body.country });
     }
     console.log(country);
     let state;
     if (req.body.state === "All" || req.body.state === undefined) {
-      state = await State.findOne({ state: "All" });
+      state = await State.findOne({ state: "Karnataka" });
     } else {
       state = await State.findOne({ _id: req.body.state });
     }
