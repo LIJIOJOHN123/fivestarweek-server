@@ -277,7 +277,7 @@ exports.forgotPassword = async (req, res) => {
     const token = await jwt.sign(
       { _id: user._id },
       process.env.JWT_RESET_PASSWORD,
-      { expiresIn: "10m" }
+      { expiresIn: "1h" }
     );
 
     user.resetPassword = token;
@@ -328,7 +328,7 @@ exports.resetPassword = async (req, res) => {
       if (!validToken) {
         return res.status(404).send({ message: "Invalid! Please try again" });
       }
-      const user = await User.findOne({ resetPassword: req.query.token });
+      const user = await User.findOne({ _id: validToken._id });
       if (!user) {
         return res.status(404).send({ message: "Invalid! Please try again" });
       }
