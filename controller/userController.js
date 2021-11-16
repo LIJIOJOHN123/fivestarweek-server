@@ -76,14 +76,12 @@ exports.registartion = async (req, res) => {
     } else {
       country = await Country.findOne({ _id: req.body.country });
     }
-    console.log(country);
     let state;
     if (req.body.state === "All" || req.body.state === undefined) {
       state = await State.findOne({ state: "Karnataka" });
     } else {
       state = await State.findOne({ _id: req.body.state });
     }
-    console.log(state);
     const prefer = new Preference({
       user: user._id,
       country: country._id,
@@ -94,6 +92,8 @@ exports.registartion = async (req, res) => {
       gender: req.body.gender,
       language: req.body.language,
     });
+    const languageone = await Language.findOne({ _id: req.body.language });
+    user.language = languageone;
     if (country) {
       user.phoneCode = country.phoneCode;
       await user.save();
