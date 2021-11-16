@@ -52,7 +52,7 @@ exports.registartion = async (req, res) => {
     user.userName =
       req.body.name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
     const languageone = await Language.findOne({ _id: req.body.language });
-    user.language = languageone;
+    user.language = languageone.language;
     await user.save();
     const token = await user.generateToken();
     res.cookie("token", token, { expiresIn: "1d" });
