@@ -51,6 +51,8 @@ exports.registartion = async (req, res) => {
     user.avatars.unshift({ image: process.env.PROFIE_AVATAR, zoom: "100%" });
     user.userName =
       req.body.name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
+    const languageone = await Language.findOne({ _id: req.body.language });
+    user.language = languageone;
     await user.save();
     const token = await user.generateToken();
     res.cookie("token", token, { expiresIn: "1d" });
@@ -92,8 +94,7 @@ exports.registartion = async (req, res) => {
       gender: req.body.gender,
       language: req.body.language,
     });
-    const languageone = await Language.findOne({ _id: req.body.language });
-    user.language = languageone;
+
     if (country) {
       user.phoneCode = country.phoneCode;
       await user.save();
