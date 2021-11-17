@@ -438,7 +438,7 @@ exports.articleSponsorePublic = async (req, res) => {
         return item;
       }
     });
-    let sponsoreArtsAuthUser;
+    let sponsoreArtsAuthUser = [];
     if (req.user) {
       //auth user
       const preference = await Preference.findOne({ user: req.user._id })
@@ -483,6 +483,7 @@ exports.articleSponsorePublic = async (req, res) => {
     res.send({ articles, articlesGuest });
     //login user
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
