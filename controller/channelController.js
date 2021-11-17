@@ -63,7 +63,6 @@ exports.createChannel = async (req, res) => {
     await channel.save();
     res.send(channel);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -557,7 +556,6 @@ exports.getSuggestedChannels = async (req, res) => {
     );
     res.send({ channels });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

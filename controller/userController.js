@@ -140,7 +140,6 @@ exports.registartion = async (req, res) => {
       .status(201)
       .send({ user, token, message: "You have successfully logged in!" });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -608,7 +607,6 @@ exports.premuiumUser = async (req, res) => {
     data.send_sms = false;
     data.allow_repeated_payment = false;
     data.customer_id = req.user._id;
-    console.log(data);
 
     Insta.createPayment(data, async (error, response) => {
       if (error) {

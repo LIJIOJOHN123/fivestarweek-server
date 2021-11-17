@@ -21,7 +21,6 @@ const mixmiddleware = async (req, res, next) => {
     req.token = token;
     next();
   } else {
-    console.log("dasflkdaslk");
     next();
   }
 };

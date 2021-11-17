@@ -240,7 +240,6 @@ exports.surveyAccept = async (req, res) => {
       (item) => item.surveyStatus === AppConstant.SURVEY_RESULT_STATUS.SUBMIT
     );
     let surveyCurrentAnswer = surveyinprogress.length + surveyComplted.length;
-    console.log(surveyCurrentAnswer, survey.participants);
     surveyCurrentAnswer >= survey.participants;
     if (surveyCurrentAnswer >= survey.participants) {
       return res
@@ -288,7 +287,6 @@ exports.surveyAccept = async (req, res) => {
     await survey.save();
     res.send(survey);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -320,7 +318,6 @@ exports.surveyResponse = async (req, res) => {
     await survey.save();
     res.send(survey);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

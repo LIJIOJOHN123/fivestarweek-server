@@ -178,7 +178,6 @@ exports.createChannelSponsor = async (req, res) => {
     await payment.save();
     await sponsor.save();
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -483,7 +482,6 @@ exports.articleSponsorePublic = async (req, res) => {
     res.send({ articles, articlesGuest });
     //login user
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -544,7 +542,6 @@ exports.channleSponsorePublic = async (req, res) => {
         }
       });
     }
-    console.log(sponsoreChannAuthUser);
     const channelguests = await sponsoreChann.map((item) => item.channelId);
     const channelsId = await sponsoreChannAuthUser.map(
       (item) => item.channelId
