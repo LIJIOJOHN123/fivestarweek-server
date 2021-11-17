@@ -6,6 +6,4 @@ exports.languageLists = [
   { language: "Malayalam", languageLoc: "മലയാളം" },
   { language: "Tamil", languageLoc: "தமிழ்" },
   { language: "Telugu", languageLoc: "తెలుగు లిపి" },
-  { language: "Spanish", languageLoc: "español, castellano" },
-  { language: "Bengali", languageLoc: "বাংলা" },
 ];

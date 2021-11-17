@@ -53,7 +53,7 @@ exports.registartion = async (req, res) => {
       req.body.name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
 
     const token = await user.generateToken();
-    res.cookie("token", token, { expiresIn: "1d" });
+    res.cookie("token", token);
     if (req.query.refer !== "undefined") {
       const referlid = req.query.refer;
       const referOwner = await User.findOne({ userId: referlid });
@@ -170,7 +170,7 @@ exports.login = async (req, res) => {
         .send({ message: "Please verify your email and password" });
     const token = await user.generateToken();
 
-    res.cookie("token", token, { expiresIn: "1d" });
+    res.cookie("token", token);
     res
       .status(200)
       .send({ user, token, message: "You have successfully logged in!" });
@@ -202,7 +202,7 @@ exports.googleLogin = async (req, res) => {
         user.registerStatus = false;
         await user.save();
         const token = await user.generateToken();
-        res.cookie("token", token, { expiresIn: "1d" });
+        res.cookie("token", token);
         return res.send({
           token,
           user,
@@ -243,7 +243,7 @@ exports.facebookLogin = async (req, res) => {
       user.registerStatus = false;
       await user.save();
       const token = await user.generateToken();
-      res.cookie("token", token, { expiresIn: "1d" });
+      res.cookie("token", token);
       return res.send({
         token,
         user,
@@ -608,13 +608,16 @@ exports.premuiumUser = async (req, res) => {
     data.send_sms = false;
     data.allow_repeated_payment = false;
     data.customer_id = req.user._id;
+    console.log(data);
 
     Insta.createPayment(data, async (error, response) => {
       if (error) {
         // some error
       } else {
         // Payment redirection link at response.payment_request.longurl
+
         const responseData = JSON.parse(response);
+
         const redirectUrl = responseData.payment_request.longurl;
 
         res.send(redirectUrl);
@@ -627,14 +630,16 @@ exports.paymentCallbackAPI = async (req, res) => {
   try {
     if (req.query.payment_id) {
       const user = await User.findByIdAndUpdate({ _id: req.params.id });
-      user.premiumId = req.query.payment_id;
-      user.isPremium = true;
-      user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
+
       if (req.query.payment_id === user.premiumId) {
         return res
           .status(404)
           .send({ message: "Please verify your transaction" });
       }
+      user.premiumId = req.query.payment_id;
+      user.isPremium = true;
+      user.premiumDate = moment(Date.now()).format("MM/DD/YYYY");
+
       var ses = require("node-ses"),
         client = ses.createClient({
           key: process.env.AWS_KEY,
