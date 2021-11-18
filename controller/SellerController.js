@@ -46,9 +46,11 @@ exports.premiumPaymentInitialization = async (req, res) => {
 
     Insta.createPayment(data, async (error, response) => {
       if (error) {
+        console.log(error);
         // some error
       } else {
         // Payment redirection link at response.payment_request.longurl
+        console.log(response);
 
         const responseData = JSON.parse(response);
         const redirectUrl = responseData.payment_request.longurl;
