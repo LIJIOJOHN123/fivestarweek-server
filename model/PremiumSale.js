@@ -50,10 +50,7 @@ const PremiumSchema = new Schema(
         AppConstant.PREMIUM_TYPE.DIAMOND,
       ],
     },
-    pointStatus: {
-      type: Boolean,
-      default: false,
-    },
+
     premiumType: {
       type: Number,
       default: AppConstant.PREMIUM_TYPE.NORMAL,
@@ -64,9 +61,7 @@ const PremiumSchema = new Schema(
         AppConstant.PREMIUM_TYPE.DIAMOND,
       ],
     },
-    commissionAmount: {
-      type: Number,
-    },
+
     type: {
       type: Number,
       default: AppConstant.PREMIUM_USER_TYPE.NEW,
@@ -76,6 +71,7 @@ const PremiumSchema = new Schema(
       ],
     },
     status: {
+      type: Number,
       default: AppConstant.PREMIUM_SELLER.NOT_PAID,
       enum: [
         AppConstant.PREMIUM_SELLER.NOT_PAID,

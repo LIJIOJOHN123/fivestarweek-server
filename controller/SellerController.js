@@ -2,11 +2,13 @@ const AppConstant = require("../config/appConstants");
 const Premium = require("../model/PremiumSale");
 const Score = require("../model/Score");
 const User = require("../model/User");
+var Insta = require("instamojo-nodejs");
 
 exports.premiumPaymentInitialization = async (req, res) => {
   try {
-    let { email, mobile } = req.body;
-    let newPremium = { email, mobile };
+    let { email, mobile, name, refer } = req.body;
+    let newPremium = { email, name, mobile, refer };
+
     if (req.query.ref) {
       const user = await User.findOne({ userId: req.query.ref });
       newPremium.refer = req.query.ref;
@@ -18,6 +20,7 @@ exports.premiumPaymentInitialization = async (req, res) => {
     } else {
       newPremium.registeredStatus = false;
     }
+    newPremium.status = AppConstant.PREMIUM_SELLER.NOT_PAID;
     newPremium.amount = parseInt(req.body.amount);
     newPremium.date = Date.now();
     if (req.body.type === 1) {
@@ -48,13 +51,11 @@ exports.premiumPaymentInitialization = async (req, res) => {
         // Payment redirection link at response.payment_request.longurl
 
         const responseData = JSON.parse(response);
-
         const redirectUrl = responseData.payment_request.longurl;
 
         res.send(redirectUrl);
       }
     });
-    res.send(newPlan);
   } catch (error) {
     res.status(500).send(error);
   }
