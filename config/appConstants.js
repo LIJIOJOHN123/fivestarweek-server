@@ -98,5 +98,15 @@ class AppConstant {
     GOLD: 2,
     DIAMOND: 3,
   };
+  static PREMIUM_SELLER = {
+    NOT_PAID: 0,
+    PENDING: 1,
+    APPROVED: 2,
+    PAID: 3,
+  };
+  static PREMIUM_USER_TYPE = {
+    NEW: 1,
+    UPGRADE: 2,
+  };
 }
 module.exports = AppConstant;

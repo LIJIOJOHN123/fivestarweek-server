@@ -1,4 +1,6 @@
+const AppConstant = require("../config/appConstants");
 const MarketingEmail = require("../model/MarketingEmail");
+const Premium = require("../model/PremiumSale");
 const Referal = require("../model/Referal");
 const User = require("../model/User");
 

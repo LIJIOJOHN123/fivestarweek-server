@@ -599,7 +599,7 @@ exports.premuiumUser = async (req, res) => {
     data.purpose = req.body.purpose;
     data.amount = req.body.amount;
     data.buyer_name = req.user.name;
-    data.redirect_url = `${process.env.SERVER_URL}/callback/premium/${req.user._id}/${req.body.amount}`;
+    data.redirect_url = `${process.env.SERVER_URL}/callbacks/premium/${req.user._id}/${req.body.amount}`;
     data.email = req.user.email;
     data.phone = req.user.mobile;
     data.send_email = false;
@@ -658,7 +658,7 @@ exports.paymentCallbackAPI = async (req, res) => {
         function (err, data, res) {}
       );
 
-      if (req.params.amount == "199") {
+      if (req.params.amount == "299") {
         const scorePrev = await Score.findOne({
           user: req.params.id,
         }).sort({

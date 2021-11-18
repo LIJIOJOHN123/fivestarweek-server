@@ -157,6 +157,13 @@ const {
   surveyApproveAll,
 } = require("../controller/surveyController");
 
+const {
+  premiumPaymentInitialization,
+  premuiumUserApprove,
+  sellListBySeller,
+  paymentCallbackAPISell,
+} = require("../controller/SellerController");
+
 /******************************** User ******************************/
 
 // @private
@@ -431,5 +438,14 @@ userRouter.get("/country/:id", stateList);
 userRouter.get("/country/:id/:sid", cityList);
 userRouter.post("/sendemailinviation", authMiddleware, getEmail);
 userRouter.get("/articlestatics/:id", articleDetailStatitics);
+//seller
+userRouter.post(
+  "/createpremiumrequest",
+  mixmiddleware,
+  premiumPaymentInitialization
+);
+userRouter.post("/premierapprove", authMiddleware, premuiumUserApprove);
+userRouter.get("/premiumrequestlistuser", authMiddleware, sellListBySeller);
+userRouter.get("/callbacks/premium/:id/:amount", paymentCallbackAPISell);
 
 module.exports = userRouter;

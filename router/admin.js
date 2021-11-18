@@ -62,6 +62,9 @@ const {
   forcedArticleSponsorExitAdmin,
   forcedChannelSponsorAdmin,
   channelAddInfo,
+  premiumUserList,
+  premuiumUserApprove,
+  approvePaymetStatus,
 } = require("../controller/adminController");
 const authMiddleware = require("../middleware/authMiddleware");
 const {
@@ -248,4 +251,20 @@ adminRouter.post(
   forcefulExitAdminSurvey
 );
 
+adminRouter.get("/premieruserlist", adminMiddleware, premiumUserList);
+adminRouter.post(
+  "/premieruserlistapprove",
+  adminMiddleware,
+  premuiumUserApprove
+);
+adminRouter.post(
+  "/premieruserlistapprovepayment",
+  adminMiddleware,
+  approvePaymetStatus
+);
+
 module.exports = adminRouter;
+
+//premium user list
+//premium user approve
+// premium  payment approve
