@@ -157,16 +157,18 @@ exports.sellListBySeller = async (req, res) => {
 //call back
 exports.paymentCallbackAPISell = async (req, res) => {
   try {
+    console.log("premium");
+
     if (req.query.payment_id) {
       const premium = await Premium.findByIdAndUpdate({ _id: req.params.id });
-
+      console.log(premium);
       if (req.query.payment_id === premium.premiumId) {
         return res
           .status(404)
           .send({ message: "Please verify your transaction" });
       }
       premium.premiumId = req.query.payment_id;
-      premium.date = moment(Date.now()).format("MM/DD/YYYY");
+      premium.date = Date.now();
       premium.status = AppConstant.PREMIUM_SELLER.PENDING;
 
       var ses = require("node-ses"),
@@ -201,5 +203,7 @@ exports.paymentCallbackAPISell = async (req, res) => {
       // Redirect the user to payment complete page.
       return res.redirect(`${process.env.CLIENT_URL}/profile`);
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };

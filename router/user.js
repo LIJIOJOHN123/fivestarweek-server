@@ -446,6 +446,6 @@ userRouter.post(
 );
 userRouter.post("/premierapprove", authMiddleware, premuiumUserApprove);
 userRouter.get("/premiumrequestlistuser", authMiddleware, sellListBySeller);
-userRouter.get("/callbacks/premium/:id/:amount", paymentCallbackAPISell);
+userRouter.get("/callback/premiumsale/:id/:amount", paymentCallbackAPISell);
 
 module.exports = userRouter;
