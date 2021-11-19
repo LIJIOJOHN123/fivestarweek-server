@@ -14,7 +14,7 @@ exports.premiumPaymentInitialization = async (req, res) => {
       newPremium.refer = req.query.ref;
       newPremium.referUser = user._id;
     }
-    if (req.user) {
+    if (req.user._id) {
       newPremium.user = req.user._id;
       newPremium.registeredStatus = true;
     } else {
