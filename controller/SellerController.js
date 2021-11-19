@@ -9,12 +9,12 @@ exports.premiumPaymentInitialization = async (req, res) => {
     let { email, mobile, name, refer } = req.body;
     let newPremium = { email, name, mobile, refer };
 
-    if (req.query.ref) {
-      const user = await User.findOne({ userId: req.query.ref });
-      newPremium.refer = req.query.ref;
-      newPremium.referUser = user._id;
+    if (req.body.refer) {
+      const users = await User.findOne({ userId: req.body.refer });
+      newPremium.refer = req.body.refer;
+      newPremium.referUser = users._id;
     }
-    if (req.user._id) {
+    if (req.user) {
       newPremium.user = req.user._id;
       newPremium.registeredStatus = true;
     } else {
@@ -46,11 +46,9 @@ exports.premiumPaymentInitialization = async (req, res) => {
 
     Insta.createPayment(data, async (error, response) => {
       if (error) {
-        console.log(error);
         // some error
       } else {
         // Payment redirection link at response.payment_request.longurl
-        console.log(response);
 
         const responseData = JSON.parse(response);
         const redirectUrl = responseData.payment_request.longurl;
@@ -163,7 +161,6 @@ exports.paymentCallbackAPISell = async (req, res) => {
 
     if (req.query.payment_id) {
       const premium = await Premium.findByIdAndUpdate({ _id: req.params.id });
-      console.log(premium);
       if (req.query.payment_id === premium.premiumId) {
         return res
           .status(404)
