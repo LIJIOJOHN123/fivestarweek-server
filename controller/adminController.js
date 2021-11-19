@@ -1226,7 +1226,7 @@ exports.premiumUserList = async (req, res) => {
   try {
     const premiumRequest = await Premium.find({}).limit(
       parseInt(req.query.limit)
-    );
+    ).sort({createdAt:-1});
     res.send(premiumRequest);
   } catch (error) {
     res.status(500).send(error);
