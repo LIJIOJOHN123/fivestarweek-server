@@ -1,0 +1,85 @@
+const admin_sponsor = require("express").Router();
+const department_middleware = require("../../middleware/departmentMiddleware");
+const {
+  sponsor_pending_list,
+  sponsor_approve_article,
+  sponsor_reject_article,
+  sponsor_approve_channel,
+  sponsor_reject_channel,
+  sponsor_article_list,
+  sponsor_channel_list,
+  sponsor_channel_edit,
+  sponsor_article_edit,
+  sponsor_article_by_id,
+  sponsor_channel_by_id,
+  sponsor_forced_article_exit,
+  sponsor_forced_channel_exit,
+} = require("../../controller/admin/sponsorManagement");
+
+admin_sponsor.get(
+  "/admin/sponsorpendinglist",
+  department_middleware,
+  sponsor_pending_list
+);
+admin_sponsor.post(
+  "/admin/articleapprove/:id",
+  department_middleware,
+  sponsor_approve_article
+);
+admin_sponsor.post(
+  "/admin/channelapprove/:id",
+  department_middleware,
+  sponsor_approve_channel
+);
+admin_sponsor.post(
+  "/admin/articlereject/:id",
+  department_middleware,
+  sponsor_reject_article
+);
+admin_sponsor.post(
+  "/admin/channelreject/:id",
+  department_middleware,
+  sponsor_reject_channel
+);
+admin_sponsor.get(
+  "/admin/sponsorelistsarticles",
+  department_middleware,
+  sponsor_article_list
+);
+admin_sponsor.get(
+  "/admin/sponsorelistschannels",
+  department_middleware,
+  sponsor_channel_list
+);
+admin_sponsor.post(
+  "/admin/channelsponsoredit/:id",
+  department_middleware,
+  sponsor_channel_edit
+);
+admin_sponsor.post(
+  "/admin/articlesponsoredit/:id",
+  department_middleware,
+  sponsor_article_edit
+);
+admin_sponsor.post(
+  "/admin/articlesponsoreexit/:id",
+  department_middleware,
+  sponsor_forced_article_exit
+);
+admin_sponsor.post(
+  "/admin/channelsponsoreexit/:id",
+  department_middleware,
+  sponsor_forced_channel_exit
+);
+admin_sponsor.get(
+  "/admin/channelsponsorid/:id",
+  department_middleware,
+  sponsor_channel_by_id
+);
+admin_sponsor.get(
+  "/admin/articlesponsorid/:id",
+  department_middleware,
+  sponsor_article_by_id
+);
+
+module.exports = admin_sponsor;

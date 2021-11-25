@@ -31,10 +31,7 @@ const preferenceSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "State",
     },
-    city: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "City",
-    },
+
     keyword: [
       {
         keyword: {

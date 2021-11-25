@@ -1,6 +1,6 @@
 const { check } = require("express-validator");
 
-exports.registerMiddlware = [
+exports.register_middleware = [
   check("name", "Name required").not().isEmpty(),
   check("email", "Email required").not().isEmpty(),
   check("password", "Password required").not().isEmpty(),
@@ -16,11 +16,11 @@ exports.registerMiddlware = [
   }),
 ];
 
-exports.loginMiddlware = [
+exports.login_middlware = [
   check("password", "Password required").not().isEmpty(),
 ];
 
-exports.channelMiddleware = [
+exports.channel_middleware = [
   check("channel", "Channel required").not().isEmpty(),
   check("channelName", "Channel Name  required").not().isEmpty(),
   check("keywords", "Atleast one keyword required").not().isEmpty(),
@@ -32,17 +32,17 @@ exports.channelMiddleware = [
   }),
 ];
 
-exports.repyMiddleware = [check("reply", "Reply required").not().isEmpty()];
+exports.reply_middleware = [check("reply", "Reply required").not().isEmpty()];
 
-exports.commentMiddlware = [
+exports.comment_middlware = [
   check("comment", "Comment required").not().isEmpty(),
 ];
 
-exports.articleMiddleware = [check("link", "Link required").not().isEmpty()];
+exports.article_middleware = [check("link", "Link required").not().isEmpty()];
 
-exports.forgotPasswordValidator = [
+exports.forgot_password_validator = [
   check("email", "Email required").not().isEmpty(),
 ];
-exports.resetPasswordValidator = [
+exports.reset_password_validator = [
   check("password", "Password required").not().isEmpty(),
 ];

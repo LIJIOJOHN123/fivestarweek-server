@@ -12,10 +12,10 @@ const publisherSchema = new Schema(
       type: String,
       default: "King",
     },
-    publisherId: {
+
+    source: {
       type: String,
     },
-
     iconImage: {
       type: String,
       default: process.env.PUBLISHER_IMAGE,
@@ -30,7 +30,6 @@ const publisherSchema = new Schema(
       type: Number,
       default: AppConstant.PUBLISHER_STATUS.NORMAL,
       enum: [
-        AppConstant.PUBLISHER_STATUS.HOME,
         AppConstant.PUBLISHER_STATUS.BLOCKED,
         AppConstant.PUBLISHER_STATUS.NORMAL,
       ],

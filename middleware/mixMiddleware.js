@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../model/User");
 const AppConstant = require("../config/appConstants");
 
-const mixmiddleware = async (req, res, next) => {
+const mix_middleware = async (req, res, next) => {
   if (
     req.header("Authorization") &&
     req.header("Authorization") !== `Bearer ${undefined}`
@@ -24,4 +24,5 @@ const mixmiddleware = async (req, res, next) => {
     next();
   }
 };
-module.exports = mixmiddleware;
+
+module.exports = mix_middleware;

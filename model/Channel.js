@@ -17,6 +17,7 @@ const channelSchema = new Schema(
     channelName: {
       type: String,
       unique: true,
+      required: true,
     },
     introduction: {
       type: String,

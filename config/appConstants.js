@@ -53,9 +53,8 @@ class AppConstant {
     BLOCKED: 2,
   };
   static PUBLISHER_STATUS = {
-    NORMAL: 0,
-    HOME: 1,
-    BLOCKED: 2,
+    ACTIVE: 0,
+    BLOCKED: 1,
   };
 
   static KEYWORDS = {
@@ -107,6 +106,24 @@ class AppConstant {
   static PREMIUM_USER_TYPE = {
     NEW: 1,
     UPGRADE: 2,
+  };
+
+  static TASK_STATUS = {
+    ACTIVE: 0,
+    BLOCKED: 1,
+  };
+  static DEPARTMENT_STATUS = {
+    ACTIVE: 0,
+    BLOCKED: 1,
+  };
+  static TEAM_POSITION = {
+    MANAGER: 2,
+    TEAM_LEADER: 1,
+    TEAM_MEMEBER: 0,
+  };
+  static TEAM_STATUS = {
+    ACTIVE: 0,
+    BLOCKED: 1,
   };
 }
 module.exports = AppConstant;
