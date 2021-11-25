@@ -1,5 +1,5 @@
 const admin_score = require("express").Router();
-const department_middleware = require("../../middleware/departmentMiddleware");
+const admin_middleware = require("../../middleware/adminMiddleware");
 const {
   score_list,
   score_add,
@@ -8,8 +8,8 @@ const {
 
 /********* User managment *******/
 
-admin_score.post("/admin/scoreadd/:id", department_middleware, score_add);
-admin_score.post("/admin/scoreremove/:id", department_middleware, score_remove);
-admin_score.get("/adminscorelist/:id", department_middleware, score_list);
+admin_score.post("/admin/scoreadd/:id", admin_middleware, score_add);
+admin_score.post("/admin/scoreremove/:id", admin_middleware, score_remove);
+admin_score.get("/adminscorelist/:id", admin_middleware, score_list);
 
 module.exports = admin_score;

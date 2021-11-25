@@ -1,5 +1,5 @@
 const admin_publisher = require("express").Router();
-const department_middleware = require("../../middleware/departmentMiddleware");
+const admin_middleware = require("../../middleware/adminMiddleware");
 const {
   publisher_block,
   publisher_unblock,
@@ -8,15 +8,15 @@ const {
 
 /********* User managment *******/
 
-admin_publisher.get("/admin/publishers", department_middleware, publisher_list);
+admin_publisher.get("/admin/publishers", admin_middleware, publisher_list);
 admin_publisher.post(
   "/admin/publsher/block:id",
-  department_middleware,
+  admin_middleware,
   publisher_block
 );
 admin_publisher.post(
   "/admin/publsher/unblock:id",
-  department_middleware,
+  admin_middleware,
   publisher_unblock
 );
 

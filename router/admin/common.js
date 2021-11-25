@@ -1,5 +1,4 @@
 const admin_common = require("express").Router();
-const department_middleware = require("../../middleware/departmentMiddleware");
 const admin_middleware = require("../../middleware/adminMiddleware");
 
 const {
@@ -13,7 +12,7 @@ const {
 
 /********* Category managment *******/
 
-admin_common.post("/admin/addlanguage", department_middleware, add_language);
+admin_common.post("/admin/addlanguage", admin_middleware, add_language);
 
 admin_common.post("/counry", add_country_list);
 admin_common.post("/language", add_language_list);

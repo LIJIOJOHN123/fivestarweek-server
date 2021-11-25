@@ -1,5 +1,5 @@
 const admin_article = require("express").Router();
-const department_middleware = require("../../middleware/departmentMiddleware");
+const admin_middleware = require("../../middleware/adminMiddleware");
 const {
   article_list,
   article_block,
@@ -9,22 +9,14 @@ const {
 } = require("../../controller/admin/articleManagement");
 
 /********* User managment *******/
-admin_article.get("/admin/articles", department_middleware, article_list);
-admin_article.post(
-  "/admin/blockarticle/:id",
-  department_middleware,
-  article_block
-);
+admin_article.get("/admin/articles", admin_middleware, article_list);
+admin_article.post("/admin/blockarticle/:id", admin_middleware, article_block);
 admin_article.post(
   "/admin/unblockarticle/:id",
-  department_middleware,
+  admin_middleware,
   article_unblock
 );
-admin_article.get(
-  "/admin/articlesearch",
-  department_middleware,
-  article_search
-);
+admin_article.get("/admin/articlesearch", admin_middleware, article_search);
 
 admin_article.get("/admin/violationarticle", article_violation_list);
 

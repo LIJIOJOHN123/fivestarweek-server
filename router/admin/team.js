@@ -1,5 +1,5 @@
 const admin_team = require("express").Router();
-const department_middleware = require("../../middleware/authMiddleware");
+const admin_middleware = require("../../middleware/adminMiddleware");
 
 const {
   team_member,
@@ -15,34 +15,26 @@ const {
 
 //task
 
-admin_team.post("/team_member", department_middleware, team_member);
-admin_team.post("/team/block/:id", department_middleware, team_member_remove);
-admin_team.post("/team/add/:id/tid", department_middleware, team_add_task);
-admin_team.post(
-  "/task/remove/:id/tid",
-  department_middleware,
-  team_remove_task
-);
+admin_team.post("/team_member", admin_middleware, team_member);
+admin_team.post("/team/block/:id", admin_middleware, team_member_remove);
+admin_team.post("/team/add/:id/tid", admin_middleware, team_add_task);
+admin_team.post("/task/remove/:id/tid", admin_middleware, team_remove_task);
 
-admin_team.get("/team/list", department_middleware, team_members_list);
+admin_team.get("/team/list", admin_middleware, team_members_list);
 admin_team.get(
   "/team/department/list",
-  department_middleware,
+  admin_middleware,
   team_members_list_by_department
 );
 admin_team.get(
   "/team/tealeader/list",
-  department_middleware,
+  admin_middleware,
   team_members_list_by_teamLeader
 );
 admin_team.get(
   "/team/manager/list",
-  department_middleware,
+  admin_middleware,
   team_members_list_by_manager
 );
-admin_team.get(
-  "/team/team_by_user",
-  department_middleware,
-  team_member_by_user
-);
+admin_team.get("/team/team_by_user", admin_middleware, team_member_by_user);
 module.exports = admin_team;

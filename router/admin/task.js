@@ -1,5 +1,5 @@
 const admin_task = require("express").Router();
-const department_middleware = require("../../middleware/departmentMiddleware");
+const admin_middleware = require("../../middleware/adminMiddleware");
 
 const {
   task_create,
@@ -12,10 +12,10 @@ const {
 
 //task
 
-admin_task.post("/task", department_middleware, task_create);
-admin_task.post("/task/block/:id", department_middleware, task_block);
-admin_task.post("/task/unblock/:id", department_middleware, task_unblock);
-admin_task.post("/task/edit/:id", department_middleware, task_edit);
-admin_task.get("/task/list", department_middleware, task_lists_all);
-admin_task.get("/task/lists", department_middleware, task_list);
+admin_task.post("/task", admin_middleware, task_create);
+admin_task.post("/task/block/:id", admin_middleware, task_block);
+admin_task.post("/task/unblock/:id", admin_middleware, task_unblock);
+admin_task.post("/task/edit/:id", admin_middleware, task_edit);
+admin_task.get("/task/list", admin_middleware, task_lists_all);
+admin_task.get("/task/lists", admin_middleware, task_list);
 module.exports = admin_task;
