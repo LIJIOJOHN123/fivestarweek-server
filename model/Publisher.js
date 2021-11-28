@@ -28,10 +28,10 @@ const publisherSchema = new Schema(
     ],
     status: {
       type: Number,
-      default: AppConstant.PUBLISHER_STATUS.NORMAL,
+      default: AppConstant.PUBLISHER_STATUS.ACTIVE,
       enum: [
         AppConstant.PUBLISHER_STATUS.BLOCKED,
-        AppConstant.PUBLISHER_STATUS.NORMAL,
+        AppConstant.PUBLISHER_STATUS.ACTIVE,
       ],
     },
   },
