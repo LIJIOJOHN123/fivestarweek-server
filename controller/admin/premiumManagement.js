@@ -23,12 +23,14 @@ exports.premium_user_approve = async (req, res) => {
       _id: req.params.id,
       status: AppConstant.PREMIUM_SELLER.PENDING,
     });
+
     if (!buyer) {
       res.status(404).send({
         message:
           "Please wait for admin payment confirmation. If you do not hear from admin please message them with ID",
       });
     }
+    buyer.status = AppConstant.PREMIUM_SELLER.APPROVED;
     const user = await User.find({ _id: buyer.user });
     if (!user) {
       res.status(404).send({
@@ -101,6 +103,7 @@ exports.premium_user_approve = async (req, res) => {
       type: "premium_manager",
     });
     await activity.save();
+    await buyer.save();
     res.send({ buyer });
   } catch (error) {
     res.status(500).send(error);
