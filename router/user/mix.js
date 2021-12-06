@@ -74,11 +74,7 @@ mix_router.get(
 );
 
 //seller
-mix_router.post(
-  "/createpremiumrequest/:id",
-  mix_middleware,
-  premium_initilization
-);
+mix_router.post("/createpremiumrequest", mix_middleware, premium_initilization);
 
 mix_router.get("/callback/premiumsale/:id/:amount", premium_callback_api);
 

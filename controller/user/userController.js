@@ -412,9 +412,17 @@ exports.user_email_verification_request = async (req, res) => {
         from: process.env.SESFROMMAIL,
         subject: "OTP Verfication",
         message: `   <p>Hi ,</p> <br/>
-          <h4>Please click <a href="httldkjs">Click here<a/> to reset your password</h4>
+          <p>${otp}.</p> </br>
           <br/>
-          <p>${otp}.</p>
+          <br/>
+          <p>Do not share your OTP with anyone including Fivestarweek staff</p>
+          <br/>
+          <br/>
+          <p>For any OTP related query please email us at info@fivestarweek.com</p>
+          <br/>
+          <p>Regards,</p>
+          <br/>
+          <p>Fivestarweek team</p>
           `,
         altText: "plain text",
       },
@@ -545,6 +553,11 @@ exports.user_premium_callback_api = async (req, res) => {
           <h4>Congradulation! You have become premium user</h4>
           <br/>
           <p>Thank you so much for the subscription.</p>
+          <br/>
+          <br/>
+          <p>Regards,</p>
+          <br/>
+          <p>Fivestarweek team</p>
           `,
           altText: "plain text",
         },
