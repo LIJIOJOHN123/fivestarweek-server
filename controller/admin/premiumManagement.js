@@ -21,7 +21,7 @@ exports.premium_user_approve = async (req, res) => {
   try {
     let buyer = await Premium.findOne({
       _id: req.params.id,
-      status: AppConstant.PREMIUM_SELLER.APPROVED,
+      status: AppConstant.PREMIUM_SELLER.PENDING,
     });
     if (!buyer) {
       res.status(404).send({
