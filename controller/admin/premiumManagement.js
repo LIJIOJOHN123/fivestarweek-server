@@ -3,6 +3,7 @@ const User = require("../../model/User");
 const Score = require("../../model/Score");
 const Premium = require("../../model/PremiumSale");
 const AcitivityHistory = require("../../model/ActivityHistory");
+const Earning = require("../../model/Earning");
 
 // seller
 exports.premium_user_list = async (req, res) => {
@@ -56,6 +57,20 @@ exports.premium_user_approve = async (req, res) => {
           points: 350,
           totalScore: scorePrev === null ? 350 : scorePrev.totalScore + 350,
         });
+        const earn = await Earning.findOne({ user: buyer.user }).sort({
+          createdAt: -1,
+        });
+        let totals = parseInt(earn.balance) + 87;
+        const newpayment = {
+          user: buyer.user,
+          type: "Credit",
+          description: `Premium user income - ${buyer.email}`,
+          amount: 87,
+          status: true,
+          balance: totals,
+        };
+        const earnings = new Earning(newpayment);
+        await earnings.save();
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.SILVER;
       } else if (buyer.amount == 499) {
@@ -73,6 +88,20 @@ exports.premium_user_approve = async (req, res) => {
           points: 1000,
           totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 1000,
         });
+        const earn = await Earning.findOne({ user: buyer.user }).sort({
+          createdAt: -1,
+        });
+        let totals = parseInt(earn.balance) + 147;
+        const newpayment = {
+          user: buyer.user,
+          type: "Credit",
+          description: `Premium user income - ${buyer.email}`,
+          amount: 147,
+          status: true,
+          balance: totals,
+        };
+        const earnings = new Earning(newpayment);
+        await earnings.save();
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.GOLD;
       } else if (buyer.amount == 999) {
@@ -90,6 +119,20 @@ exports.premium_user_approve = async (req, res) => {
           points: 2500,
           totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 2500,
         });
+        const earn = await Earning.findOne({ user: buyer.user }).sort({
+          createdAt: -1,
+        });
+        let totals = parseInt(earn.balance) + 297;
+        const newpayment = {
+          user: buyer.user,
+          type: "Credit",
+          description: `Premium user income - ${buyer.email}`,
+          amount: 297,
+          status: true,
+          balance: totals,
+        };
+        const earnings = new Earning(newpayment);
+        await earnings.save();
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.DIAMOND;
       }
