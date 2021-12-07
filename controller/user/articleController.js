@@ -480,7 +480,7 @@ exports.article_visit_auth = async (req, res) => {
     })
       .distinct("user")
       .countDocuments();
-    let thresh = 2; //points
+    let thresh = 100; //points
     const scores =
       (await Score.find({
         type: "Visit",
@@ -509,12 +509,12 @@ exports.article_visit_auth = async (req, res) => {
     })
       .distinct("user")
       .countDocuments();
-    let threshhold = 2; //thresh
+    let threshhold = 250; //thresh
     const score =
       (await Score.find({
         type: "Visited",
         user: article.user,
-      }).countDocuments()) * 5;
+      }).countDocuments()) * 10;
     const result = uniquevistors / threshhold;
     let balance = result - score;
     const scorePrevs = await Score.findOne({ user: req.user._id }).sort({
@@ -526,8 +526,8 @@ exports.article_visit_auth = async (req, res) => {
         activity: "Visited",
         description: `You have 250 more visitors viewed  article ${req.user._id}`,
         mode: "Credit",
-        points: 5,
-        totalScore: scorePrevs === null ? 5 : scorePrevs.totalScore + 5,
+        points: 10,
+        totalScore: scorePrevs === null ? 10 : scorePrevs.totalScore + 10,
       });
       await userScore.save();
     }
