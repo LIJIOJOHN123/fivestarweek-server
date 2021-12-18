@@ -297,7 +297,7 @@ exports.channel_list_suggestion_auth_user_by_qualification = async (
   try {
     const preference = await Preference.findOne({ user: req.user._id })
       .select(["-keyword", "-intersted", "-visited"])
-      .populate(["country", "state", "language"]);
+      .populate(["language"]);
     const channel = await Channel.find({
       language: preference.language._id,
     }).limit(parseInt(req.query.limit));
