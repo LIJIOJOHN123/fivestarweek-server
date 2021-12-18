@@ -145,16 +145,7 @@ exports.user_info_auth = async (req, res) => {
 
 exports.user_update = async (req, res) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = [
-    "name",
-    "mobile",
-    "phoneCode",
-    "language",
-    "date",
-    "month",
-    "year",
-    "value",
-  ];
+  const allowedUpdates = ["name", "mobile", "phoneCode", "language", "value"];
   if (req.body.name) {
     userRealName =
       req.body.name.toLowerCase().charAt(0).toUpperCase() +
@@ -162,8 +153,8 @@ exports.user_update = async (req, res) => {
   }
   let userLanguage;
   if (req.body.value) {
-    const firstLag = await Language.findOne({ _id: req.body.value });
-    userLanguage = firstLag.language;
+    // const firstLag = await Language.findOne({ _id: req.body.value });
+    userLanguage = req.body.value;
   }
   const isValidUpdate = updates.every((update) =>
     allowedUpdates.includes(update)

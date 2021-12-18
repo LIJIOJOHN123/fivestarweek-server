@@ -38,6 +38,7 @@ exports.user_registartion = async (req, res) => {
       req.body.name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
     user.mobile = req.body.mobile;
     const token = await user.generateToken();
+    user.langauge = req.body.language;
     res.cookie("token", token);
     if (req.query.refer !== "undefined") {
       const referlid = req.query.refer;
@@ -55,33 +56,33 @@ exports.user_registartion = async (req, res) => {
         ref.usersRefered.unshift(user._id);
       }
     }
-    let country;
-    if (req.body.country === "All" || req.body.country === undefined) {
-      country = await Country.findOne({ country: "India" });
-    } else {
-      country = await Country.findOne({ _id: req.body.country });
-    }
-    let state;
-    if (req.body.state === "All" || req.body.state === undefined) {
-      state = await State.findOne({ state: "Karnataka" });
-    } else {
-      state = await State.findOne({ _id: req.body.state });
-    }
+    // let country;
+    // if (req.body.country === "All" || req.body.country === undefined) {
+    //   country = await Country.findOne({ country: "India" });
+    // } else {
+    //   country = await Country.findOne({ _id: req.body.country });
+    // }
+    // let state;
+    // if (req.body.state === "All" || req.body.state === undefined) {
+    //   state = await State.findOne({ state: "Karnataka" });
+    // } else {
+    //   state = await State.findOne({ _id: req.body.state });
+    // }
     const prefer = new Preference({
       user: user._id,
-      country: country._id,
-      state: state._id,
-      date: req.body.date,
-      month: req.body.month,
-      year: req.body.year,
-      gender: req.body.gender,
+      // country: country._id,
+      // state: state._id,
+      // date: req.body.date,
+      // month: req.body.month,
+      // year: req.body.year,
+      // gender: req.body.gender,
       language: req.body.language,
     });
 
-    if (country) {
-      user.phoneCode = country.phoneCode;
-      await user.save();
-    }
+    // if (country) {
+    //   user.phoneCode = country.phoneCode;
+    //   await user.save();
+    // }
     await prefer.save();
     const userScore = new Score({
       user: user._id,

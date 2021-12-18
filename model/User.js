@@ -76,7 +76,7 @@ const UserSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    language: { type: String, default: process.env.LANGUAGE_NAME },
+    language: { type: mongoose.Schema.Types.ObjectId, ref: "Language" },
     avatar: {
       image: {
         type: String,
