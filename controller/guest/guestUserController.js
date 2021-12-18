@@ -12,7 +12,7 @@ const Preference = require("../../model/Preference");
 const Country = require("../../model/Country");
 const State = require("../../model/State");
 const Payment = require("../../model/Payment");
-const Langauge = require("../../model/Language");
+const Language = require("../../model/Language");
 //name:Registration
 //desc: register as a user
 //status:@public
