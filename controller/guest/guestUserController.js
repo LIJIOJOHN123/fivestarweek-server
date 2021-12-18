@@ -38,7 +38,7 @@ exports.user_registartion = async (req, res) => {
       req.body.name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
     user.mobile = req.body.mobile;
     const token = await user.generateToken();
-    user.langauge = req.body.language;
+    user.language = req.body.language;
     res.cookie("token", token);
     if (req.query.refer !== "undefined") {
       const referlid = req.query.refer;
