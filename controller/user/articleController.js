@@ -318,11 +318,15 @@ exports.article_by_id = async (req, res) => {
     const relatedDiscussion = await Article.find({ link: article.link })
       .limit(4)
       .populate("channel");
-
+    let sponsoredArticles = await Article.find({
+      status: AppConstant.ARTICLE_STATUS.ACTIVE,
+      sponsor: AppConstant.SPONSOR.SPONSORED,
+    }).limit(6);
     res.send({
       article,
       channelArticleList,
       relatedDiscussion,
+      sponsoredArticles,
     });
   } catch (error) {
     res.status(500).send(error);
