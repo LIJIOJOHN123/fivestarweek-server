@@ -169,6 +169,7 @@ exports.comment_list_filtered_by_article = async (req, res) => {
       article: req.params.id,
       status: AppConstant.COMMENT_STATUS.ACTIVE,
     })
+      .limit(parseInt(req.query.limit))
       .populate({ path: "user", select: "-email" })
       .sort({ createdAt: -1 });
 
