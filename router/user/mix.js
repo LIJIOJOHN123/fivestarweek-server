@@ -22,6 +22,8 @@ const {
   user_qaulfication_by_id,
   premium_initilization,
   premium_callback_api,
+  searchMobile,
+  presearchMobile,
 } = require("../../controller/user/mixController");
 const mix_middleware = require("../../middleware/mixMiddleware");
 
@@ -62,6 +64,9 @@ mix_router.post("/sendemailinviation", auth_middleware, send_marketing_emails);
 //search
 mix_router.get("/searching", mix_middleware, search);
 mix_router.get("/presearchresult", presearch);
+mix_router.get("/searching_mobile", mix_middleware, searchMobile);
+mix_router.get("/presearchresult_mobile", presearchMobile);
+
 mix_router.post(
   "/userpreference/:id",
   auth_middleware,
