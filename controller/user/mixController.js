@@ -554,7 +554,7 @@ exports.presearchMobile = async (req, res) => {
     })
       .populate("user")
       .sort({ createdAt: -1 })
-      .limit(18);
+      .limit(26);
     let channeOnline = channels.map((item) => item._id);
     const articles = await Article.find({
       status: AppConstant.ARTICLE_STATUS.ACTIVE,
