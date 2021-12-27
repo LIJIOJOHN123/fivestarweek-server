@@ -16,6 +16,7 @@ const {
   article_visit_auth,
   article_visit_public,
   article_statitcs,
+  article_home,
 } = require("../../controller/user/articleController");
 
 /******************************** Article ******************************/
@@ -55,5 +56,6 @@ article_router.post("/articles/delete/:id", auth_middleware, article_delete);
 
 article_router.get("/articles/:id", article_by_id);
 article_router.get("/articlestatics/:id", article_statitcs);
+article_router.get("/article/home", article_home);
 
 module.exports = article_router;

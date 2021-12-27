@@ -28,6 +28,10 @@ const channelSchema = new Schema(
     keywords: {
       type: String,
     },
+    home: {
+      type: Boolean,
+      default: false,
+    },
     verifiedStatus: {
       type: Number,
       default: AppConstant.CHANNEL_VERIFICATION.NORMAL,

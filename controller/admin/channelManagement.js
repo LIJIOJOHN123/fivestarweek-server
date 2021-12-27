@@ -148,6 +148,7 @@ exports.channel_add_additional_info = async (req, res) => {
       _id: req.params.id,
     });
     channel.language = req.body.language;
+    channel.home = req.body.home;
     const activity = new AcitivityHistory({
       action: `${req.user.name} added language to this channel.`,
       user: req.user._id,

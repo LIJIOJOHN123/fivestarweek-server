@@ -720,3 +720,26 @@ exports.article_statitcs = async (req, res) => {
     res.status(500).send(error);
   }
 };
+
+//home articles
+
+exports.article_home = async (req, res) => {
+  try {
+    const language = req.query.language;
+    const channels = await Channel.find({
+      status: AppConstant.CHANNEL_STATUS.ACTIVE,
+      home: true,
+      language,
+    });
+    let channelIds = await channels.map((channel) => channel._id);
+    const articles = await Article.find({
+      channel: channelIds,
+    })
+      .sort({ createdAt: -1 })
+      .limit(28)
+      .populate("channel");
+    res.send({ articles });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
