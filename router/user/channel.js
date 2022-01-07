@@ -44,7 +44,7 @@ var upload = multer({
   storage: multerS3({
     size: 3000,
     s3: S3,
-    bucket: "testing91081/channel",
+    bucket: "fivestarweek/channel",
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },

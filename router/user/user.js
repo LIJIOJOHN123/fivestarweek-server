@@ -25,12 +25,17 @@ const aws = require("aws-sdk");
 const uuid = require("uuid").v4;
 
 const S3 = new aws.S3();
+aws.config.update({
+  accessKeyId: process.env.AWS_KEY,
+  secretAccessKey: process.env.AWS_SCECRET_KEY,
+  region: process.env.AWS_REGION,
+});
 
 var uploads = multer({
   storage: multerS3({
     size: 3000,
     s3: S3,
-    bucket: "testing91081/profile",
+    bucket: "fivestarweek/profile",
     metadata: function (req, file, cb) {
       cb(null, { fieldName: file.fieldname });
     },
@@ -65,12 +70,6 @@ user_router.post(
 );
 user_router.post("/emailverifyonline", auth_middleware, user_email_verify);
 user_router.get("/callback/premium/:id/:amount", user_premium_callback_api);
-
-aws.config.update({
-  accessKeyId: process.env.AWS_KEY,
-  secretAccessKey: process.env.AWS_SCECRET_KEY,
-  region: process.env.AWS_REGION,
-});
 
 user_router.post(
   "/profile/uploadone",

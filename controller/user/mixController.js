@@ -405,7 +405,7 @@ exports.presearch = async (req, res) => {
       channel: channeOnline,
     })
       .populate(["channel", "user"])
-      .sort({ createdAt: 1 })
+      .sort({ createdAt: -1 })
       .limit(20);
     const videos = await Article.find({
       status: AppConstant.ARTICLE_STATUS.ACTIVE,
