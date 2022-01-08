@@ -389,6 +389,7 @@ exports.channel_list_public = async (req, res) => {
   try {
     const channelCount = await Channel.find({
       status: AppConstant.CHANNEL_STATUS.ACTIVE,
+      verifiedStatus: AppConstant.CHANNEL_VERIFICATION.VERIFIED,
     }).countDocuments();
     const channels = await Channel.find({
       status: AppConstant.CHANNEL_STATUS.ACTIVE,
