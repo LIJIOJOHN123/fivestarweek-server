@@ -20,7 +20,6 @@ const {
 const { run_validation } = require("../../middleware/validatorerror");
 const multer = require("multer");
 var multerS3 = require("multer-s3");
-
 const aws = require("aws-sdk");
 const uuid = require("uuid").v4;
 
@@ -30,10 +29,9 @@ aws.config.update({
   secretAccessKey: process.env.AWS_SCECRET_KEY,
   region: process.env.AWS_REGION,
 });
-
-var uploads = multer({
+var upload = multer({
   storage: multerS3({
-    size: 3000,
+    size: 4000,
     s3: S3,
     bucket: "fivestarweek/profile",
     metadata: function (req, file, cb) {
@@ -48,6 +46,7 @@ var uploads = multer({
     },
   }),
 });
+
 // @private
 user_router.put("/user", auth_middleware, run_validation, user_update);
 user_router.patch("/user/userName", auth_middleware, user_username_exist_check);
@@ -74,7 +73,7 @@ user_router.get("/callback/premium/:id/:amount", user_premium_callback_api);
 user_router.post(
   "/profile/uploadone",
   auth_middleware,
-  uploads.single("avatar"),
+  upload.single("avatar"),
   user_add_avatar
 );
 
