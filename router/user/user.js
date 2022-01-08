@@ -22,16 +22,16 @@ const multer = require("multer");
 var multerS3 = require("multer-s3");
 const aws = require("aws-sdk");
 const uuid = require("uuid").v4;
-
 const S3 = new aws.S3();
 aws.config.update({
   accessKeyId: process.env.AWS_KEY,
   secretAccessKey: process.env.AWS_SCECRET_KEY,
   region: process.env.AWS_REGION,
 });
+//upload image
 var upload = multer({
   storage: multerS3({
-    size: 4000,
+    size: 3000,
     s3: S3,
     bucket: "fivestarweek/profile",
     metadata: function (req, file, cb) {
@@ -46,7 +46,6 @@ var upload = multer({
     },
   }),
 });
-
 // @private
 user_router.put("/user", auth_middleware, run_validation, user_update);
 user_router.patch("/user/userName", auth_middleware, user_username_exist_check);

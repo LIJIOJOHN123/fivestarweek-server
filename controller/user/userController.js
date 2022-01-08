@@ -242,19 +242,20 @@ exports.user_logout_all = async (req, res) => {
 //desc: change avatar
 //status:@private
 exports.user_add_avatar = async (req, res) => {
+  console.log(req.file);
   try {
     const user = await User.findOne({ _id: req.user._id });
     const profileAvatar = {
       image: req.file.location,
       zoom: req.query.zoom || "100%",
     };
-
     user.avatars.unshift(profileAvatar);
     user.avatar.image = req.file.location;
     user.avatar.zoom = parseInt(req.query.zoom);
     await user.save();
     res.send(user);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
