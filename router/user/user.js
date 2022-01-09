@@ -18,16 +18,18 @@ const {
   user_become_premium_user_paytm,
 } = require("../../controller/user/userController");
 const { run_validation } = require("../../middleware/validatorerror");
+
 const multer = require("multer");
 var multerS3 = require("multer-s3");
 const aws = require("aws-sdk");
 const uuid = require("uuid").v4;
-const S3 = new aws.S3();
 aws.config.update({
   accessKeyId: process.env.AWS_KEY,
   secretAccessKey: process.env.AWS_SCECRET_KEY,
   region: process.env.AWS_REGION,
 });
+const S3 = new aws.S3();
+
 //upload image
 var upload = multer({
   storage: multerS3({

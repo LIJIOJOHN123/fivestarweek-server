@@ -242,7 +242,6 @@ exports.user_logout_all = async (req, res) => {
 //desc: change avatar
 //status:@private
 exports.user_add_avatar = async (req, res) => {
-  console.log(req.file);
   try {
     const user = await User.findOne({ _id: req.user._id });
     const profileAvatar = {
@@ -251,11 +250,10 @@ exports.user_add_avatar = async (req, res) => {
     };
     user.avatars.unshift(profileAvatar);
     user.avatar.image = req.file.location;
-    user.avatar.zoom = parseInt(req.query.zoom);
+    user.avatar.zoom = req.query.zoom;
     await user.save();
     res.send(user);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -479,14 +477,12 @@ exports.user_become_premium_user_paytm = async (req, res) => {
     ] = `${process.env.SERVER_URL}/callback/premium/paytm${req.user._id}/${req.body.amount}`;
     params["EMAIL"] = req.user.email;
     params["MOBILE_NO"] = req.user.mobile;
-    console.log(params);
     var paytmChecksum = PaytmChecksum.generateSignature(
       params,
       process.env.PAYTM_MERCHANT_KEY
     );
     paytmChecksum
       .then(function (result) {
-        console.log("generateSignature Returns: " + result);
         var verifyChecksum = PaytmChecksum.verifySignature(
           paytmParams,
           "YOUR_MERCHANT_KEY",
