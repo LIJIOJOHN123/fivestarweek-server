@@ -26,16 +26,8 @@ sponsor_router.get(
   auth_middleware,
   sponsor_channel_by_id
 );
-sponsor_router.get(
-  "/articlesponsorelist",
-  mix_middleware,
-  sponsor_article_users
-);
-sponsor_router.get(
-  "/channelsponosrelist",
-  mix_middleware,
-  sponsor_channel_users
-);
+sponsor_router.get("/articlesponsorelist", sponsor_article_users);
+sponsor_router.get("/channelsponosrelist", sponsor_channel_users);
 
 sponsor_router.post(
   "/articlesponosordelete/:id",

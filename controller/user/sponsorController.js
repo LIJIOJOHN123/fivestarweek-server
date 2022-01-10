@@ -297,67 +297,15 @@ exports.sponsor_article_delete = async (req, res) => {
 //article sponsore
 exports.sponsor_article_users = async (req, res) => {
   try {
-    const sponsoreArticles = await ArticleSponsor.find({
+    const sponsor = await ArticleSponsor.find({
       status: AppConstant.SPONSOR.SPONSORED,
-    })
-      .populate(["country", "state", "language", "articleId"])
-      .limit(parseInt(req.query.limit));
+    }).limit(parseInt(req.query.limit));
     //guest user
-    const sponsoreArts = sponsoreArticles.filter((item) => {
-      if (
-        item.country.country === "All" &&
-        item.state.state === "All" &&
-        item.ageFrom >= 12 &&
-        item.ageTo <= 100 &&
-        item.gender === "All" &&
-        item.language.language === "English"
-      ) {
-        return item;
-      }
-    });
-    let sponsoreArtsAuthUser = [];
-    if (req.user) {
-      //auth user
-      const preference = await Preference.findOne({ user: req.user._id })
-        .select(["-keyword", "-intersted", "-visited"])
-        .populate(["country", "state", "language"]);
-      sponsoreArtsAuthUser = sponsoreArticles.filter((item) => {
-        if (
-          item.country.country === "All" &&
-          item.state.state === "All" &&
-          item.ageFrom === 12 &&
-          item.ageTo === 100 &&
-          item.gender === "All"
-        ) {
-          // return item;
-        } else {
-          const currentDate = new Date();
-          const userAge = currentDate.getFullYear() - preference.year;
-          if (
-            (preference.country.country === item.country.country ||
-              item.country.country === "All") &&
-            (preference.state.state === item.state.state ||
-              item.state.state === "All") &&
-            (preference.language.language === item.language.language ||
-              item.language.language === "English") &&
-            (userAge >= item.ageFrom || item.ageFrom >= 12) &&
-            (userAge <= item.ageTo || item.ageTo <= 100) &&
-            (preference.gender === item.gender || item.gender === "All")
-          ) {
-            return { item };
-          }
-        }
-      });
-    }
-    const articleguest = await sponsoreArts.map((item) => item.articleId);
-    const articlesId = await sponsoreArtsAuthUser.map((item) => item.articleId);
-    const articles = await Article.find({ _id: articlesId }).populate(
-      "channel"
-    );
+    const articleguest = await sponsor.map((item) => item.articleId);
     const articlesGuest = await Article.find({ _id: articleguest }).populate(
       "channel"
     );
-    res.send({ articles, articlesGuest });
+    res.send({ sponsor, articlesGuest });
     //login user
   } catch (error) {
     res.status(500).send(error);
@@ -368,95 +316,18 @@ exports.sponsor_article_users = async (req, res) => {
 
 exports.sponsor_channel_users = async (req, res) => {
   try {
-    const sponsoreChannels = await ChannelSponsor.find({
+    const sponsor = await ChannelSponsor.find({
       status: AppConstant.SPONSOR.SPONSORED,
-    })
-      .populate(["country", "state", "language", "channelId"])
-      .limit(parseInt(req.query.limit));
+    }).limit(parseInt(req.query.limit));
     //guest user
-    const sponsoreChann = sponsoreChannels.filter((item) => {
-      if (
-        item.country.country === "All" &&
-        item.state.state === "All" &&
-        item.ageFrom >= 12 &&
-        item.ageTo <= 100 &&
-        item.gender === "All" &&
-        item.language.language === "English"
-      ) {
-        return item;
-      }
-    });
-    let sponsoreChannAuthUser;
-    if (req.user) {
-      //auth user
-      const preference = await Preference.findOne({ user: req.user._id })
-        .select(["-keyword", "-intersted", "-visited"])
-        .populate(["country", "state", "language"]);
-      sponsoreChannAuthUser = sponsoreChannels.filter((item) => {
-        if (
-          item.country.country === "All" &&
-          item.state.state === "All" &&
-          item.ageFrom === 12 &&
-          item.ageTo === 100 &&
-          item.gender === "All"
-        ) {
-          // return item;
-        } else {
-          const currentDate = new Date();
-          const userAge = currentDate.getFullYear() - preference.year;
-          if (
-            (preference.country.country === item.country.country ||
-              item.country.country === "All") &&
-            (preference.state.state === item.state.state ||
-              item.state.state === "All") &&
-            (preference.language.language === item.language.language ||
-              item.language.language === "English") &&
-            (userAge >= item.ageFrom || item.ageFrom >= 12) &&
-            (userAge <= item.ageTo || item.ageTo <= 100) &&
-            (preference.gender === item.gender || item.gender === "All")
-          ) {
-            return { item };
-          }
-        }
-      });
-    }
-    const channelguests = await sponsoreChann.map((item) => item.channelId);
-    const channelsId = await sponsoreChannAuthUser.map(
-      (item) => item.channelId
-    );
-    const channels = await Channel.find({ _id: channelsId });
-    const channelGuest = await Channel.find({
+
+    const channelguests = await sponsor.map((item) => item.channelId);
+
+    const channelGuest1 = await Channel.find({
       _id: channelguests,
     });
-
-    //guest
-    const followChann = [];
-    channelGuest
-      .map((single) => single.follows)
-      .map((single) =>
-        single.filter((double) => {
-          if (double.user.toString() === req.user._id.toString())
-            followChann.push(double.channel.toString());
-        })
-      );
-    const chan = channelGuest.map((chans) => chans._id.toString());
-    const myArray = chan.filter((i) => followChann.indexOf(i) === -1);
-    const channelGuestList = await Channel.find({ _id: myArray });
-    //auth
-    const followChann1 = [];
-    channels
-      .map((single) => single.follows)
-      .map((single) =>
-        single.filter((double) => {
-          if (double.user.toString() === req.user._id.toString())
-            followChann1.push(double.channel.toString());
-        })
-      );
-    const chan1 = channels.map((chans) => chans._id.toString());
-    const myArray1 = chan1.filter((i) => followChann1.indexOf(i) === -1);
-    const channelsAuthList = await Channel.find({ _id: myArray1 });
-
-    res.send({ channelGuestList, channelsAuthList });
+    let channelGuest = channelGuest1.length > 3 ? channelGuest1 : [];
+    res.send({ channelGuest, sponsor });
     //login user
   } catch (error) {
     res.status(500).send(error);
