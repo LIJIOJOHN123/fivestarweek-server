@@ -734,6 +734,7 @@ exports.article_home = async (req, res) => {
     let channelIds = await channels.map((channel) => channel._id);
     const articles = await Article.find({
       channel: channelIds,
+      status: AppConstant.ARTICLE_STATUS.ACTIVE,
     })
       .sort({ createdAt: -1 })
       .limit(28)

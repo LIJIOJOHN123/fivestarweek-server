@@ -24,41 +24,14 @@ exports.sponsor_article_create = async (req, res) => {
   if (!authUser) {
     return res.status(404).send({ message: "You are not authorized" });
   }
-  let countrySelect;
-  if (req.body.country === "All") {
-    let countryAlone = await Country.findOne({ country: "All" });
-    countrySelect = countryAlone._id;
-  } else {
-    countrySelect = req.body.country;
-  }
-  let stateSelect;
-  if (req.body.state === "All") {
-    const stateAlone = await State.findOne({ state: "All" });
-    stateSelect = stateAlone._id;
-  } else {
-    stateSelect = req.body.state;
-  }
 
-  let languageSelect;
-  if (req.body.language === "All") {
-    const languageAlone = await Language.findOne({ language: "English" });
-    languageSelect = languageAlone._id;
-  } else {
-    languageSelect = req.body.language;
-  }
   try {
     const newSponsor = {
       user: req.user._id,
       articleId: req.body.articleId,
       redirect: req.body.redirect,
       askedViews: req.body.askedViews,
-      gender: req.body.gender,
-      country: countrySelect,
-      state: stateSelect,
-      language: languageSelect,
       estimate: req.body.estimate,
-      ageFrom: req.body.ageFrom,
-      ageTo: req.body.ageTo,
       title: req.body.title,
       description: req.body.description,
     };
@@ -85,6 +58,7 @@ exports.sponsor_article_create = async (req, res) => {
     await sponsor.save();
     res.send(sponsor);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -95,44 +69,13 @@ exports.sponsor_channel_create = async (req, res) => {
   if (!authUser) {
     return res.status(404).send({ message: "You are not authorized" });
   }
-  let countrySelect;
-  if (req.body.country === "All") {
-    let countryAlone = await Country.findOne({ country: "All" });
-    countrySelect = countryAlone._id;
-  } else {
-    countrySelect = req.body.country;
-  }
-  let stateSelect;
-  if (req.body.state === "All") {
-    const stateAlone = await State.findOne({ state: "All" });
-    if (!stateAlone) {
-      let newState = new State({ state: "All" });
-      await newState.save();
-    }
-    stateSelect = stateAlone._id;
-  } else {
-    stateSelect = req.body.state;
-  }
 
-  let languageSelect;
-  if (req.body.language === "All") {
-    const languageAlone = await Language.findOne({ language: "English" });
-    languageSelect = languageAlone._id;
-  } else {
-    languageSelect = req.body.language;
-  }
   try {
     const newSponsor = {
       user: req.user._id,
       channelId: req.body.channelId,
       askedViews: req.body.askedViews,
-      gender: req.body.gender,
-      country: countrySelect,
-      state: stateSelect,
-      language: languageSelect,
       estimate: req.body.estimate,
-      ageFrom: req.body.ageFrom,
-      ageTo: req.body.ageTo,
       title: req.body.title,
       description: req.body.description,
     };

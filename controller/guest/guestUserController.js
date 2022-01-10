@@ -9,8 +9,6 @@ const Score = require("../../model/Score");
 const Earning = require("../../model/Earning");
 const Notification = require("../../model/Notification");
 const Preference = require("../../model/Preference");
-const Country = require("../../model/Country");
-const State = require("../../model/State");
 const Payment = require("../../model/Payment");
 const Language = require("../../model/Language");
 //name:Registration
@@ -330,15 +328,16 @@ exports.master_admin_create = async (req, res) => {
     const userOne = await User.findOne({ email: "lijo@fivestarweek.com" });
     const token = await userOne.generateToken();
     userOne.isAd = true;
-    userOne.roles.push(AppConstant.USER_ROLE.ADMIN);
+    userOne.roles.push(appConstant.USER_ROLE.ADMIN);
     await userOne.save();
     const userTwo = await User.findOne({ email: "lijojohnrbs@gmail.com" });
     const tokens = await userOne.generateToken();
     userTwo.isAd = true;
-    userTwo.roles.push(AppConstant.USER_ROLE.ADMIN);
+    userTwo.roles.push(appConstant.USER_ROLE.ADMIN);
     await userTwo.save();
     res.send({ userOne, token, userTwo, tokens });
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
