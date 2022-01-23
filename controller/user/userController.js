@@ -493,21 +493,6 @@ exports.user_become_premium_user_paytm = async (req, res) => {
       .catch(function (error) {
         console.log(error);
       });
-    // paytmChecksum
-    //   .then(function (checksum) {
-    //     console.log(checksum);
-    //     let paytmParams = {
-    //       ...params,
-    //       CHECKSUMHASH: checksum,
-    //     };
-    //     console.log(paytmParams);
-    //     res.json(paytmParams);
-
-    //     res.json(paytmParams);
-    //   })
-    //   .catch(function (error) {
-    //     console.log(error);
-    //   });
   } catch (error) {
     console.log(error);
   }

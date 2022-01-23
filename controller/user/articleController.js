@@ -314,7 +314,11 @@ exports.article_by_id = async (req, res) => {
     })
       .populate("channel")
       .sort({ createdAt: -1 })
-      .limit(8);
+      .limit(12);
+    const items = channelArticleList.findIndex(
+      (item) => item._id.toString() == article._id.toString()
+    );
+    channelArticleList.splice(items, 1);
     const relatedDiscussion = await Article.find({ link: article.link })
       .limit(4)
       .populate("channel");
@@ -739,7 +743,10 @@ exports.article_home = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(28)
       .populate("channel");
-    res.send({ articles });
+    const channelGuest = await Channel.find({
+      language: req.query.language,
+    }).limit(parseInt(12));
+    res.send({ articles, channelGuest });
   } catch (error) {
     res.status(500).send(error);
   }

@@ -57,7 +57,7 @@ mix_router.get("/callback/payment/:id/:amount", payment_add_callback_api);
 mix_router.get("/user/transactions", auth_middleware, payment_list);
 
 //Referal
-mix_router.get("/refer", auth_middleware, refer_link);
+mix_router.get("/referonline", auth_middleware, refer_link);
 mix_router.get("/referbyuser", refer_user_details);
 mix_router.post("/sendemailinviation", auth_middleware, send_marketing_emails);
 

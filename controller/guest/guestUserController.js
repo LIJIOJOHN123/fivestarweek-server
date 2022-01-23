@@ -45,7 +45,7 @@ exports.user_registartion = async (req, res) => {
       if (!ref) {
         let newRefer = {
           user: referOwner._id,
-          referalLink: `${process.env.CLIENT_URL}/refer?king=${user.userId}`,
+          referalLink: `${process.env.CLIENT_URL}/refer?refer=${user.userId}`,
         };
         const newRefers = new Referal(newRefer);
         newRefers.usersRefered.unshift(user._id);
@@ -337,7 +337,6 @@ exports.master_admin_create = async (req, res) => {
     await userTwo.save();
     res.send({ userOne, token, userTwo, tokens });
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

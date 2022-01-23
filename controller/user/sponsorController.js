@@ -58,7 +58,6 @@ exports.sponsor_article_create = async (req, res) => {
     await sponsor.save();
     res.send(sponsor);
   } catch (error) {
-    console.log(error);
     res.status(500).send(error);
   }
 };

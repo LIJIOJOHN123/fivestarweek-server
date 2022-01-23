@@ -580,7 +580,7 @@ exports.presearchMobile = async (req, res) => {
 
 exports.refer_link = async (req, res) => {
   try {
-    const refer = await Referal.findOne({ userId: req.user._id });
+    const refer = await Referal.findOne({ user: req.user._id });
     const users = await User.find({ _id: refer.usersRefered }).select({
       name: 1,
       _id: 1,
@@ -792,6 +792,6 @@ exports.premium_callback_api = async (req, res) => {
       return res.redirect(`${process.env.CLIENT_URL}`);
     }
   } catch (error) {
-    console.log(error);
+    res.status(500).send(error);
   }
 };

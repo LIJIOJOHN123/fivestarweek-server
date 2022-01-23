@@ -101,7 +101,6 @@ channel_router.get(
   auth_middleware,
   channel_list_suggestion_auth_user_by_qualification
 );
-
 /******************************** public  ******************************/
 
 channel_router.get("/channels", channel_list_public);
