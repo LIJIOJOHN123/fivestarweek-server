@@ -127,6 +127,91 @@ exports.user_registartion = async (req, res) => {
     res.status(500).send(error);
   }
 };
+exports.user_mobile_login = async (req, res) => {
+  try {
+    const user = new User(req.body);
+    const email = await User.findOne({ email: req.body.email });
+    if (email) {
+      user.roles = user.roles.map(
+        (role) => role === appConstant.USER_ROLE.USER
+      );
+      if (user.status === appConstant.USER_STATUS.BLOCKED) {
+        return res.status(400).send({
+          message:
+            "You account has been blocked due to suspecious activity. Please contact our team for further infomation.",
+        });
+      }
+      const token = await user.generateToken();
+      res.cookie("token", token);
+      res
+        .status(200)
+        .send({ user, token, message: "You have successfully logged in!" });
+    }
+    user.roles.push(appConstant.USER_ROLE.USER);
+    user.name =
+      req.body.name.toLowerCase().charAt(0).toUpperCase() +
+      req.body.name.slice(1);
+    user.userId = exportIdGenerator(20);
+    randomNumber = Math.floor(Math.random() * (20000 * 30000));
+    user.avatar.image = req.body.photUrl;
+    user.avatars.unshift({ image: req.body.photoUrl, zoom: "100%" });
+    user.userName =
+      req.body.name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
+    const token = await user.generateToken();
+    user.language = req.body.language;
+    res.cookie("token", token);
+    await user.save();
+    const prefer = new Preference({
+      user: user._id,
+      language: req.body.language,
+    });
+
+    await prefer.save();
+    const userScore = new Score({
+      user: user._id,
+      activity: "Registerd",
+      description: `You have successfully registered with FiveStarWeek`,
+      mode: "Credit",
+      points: 100,
+      totalScore: 100,
+    });
+    await userScore.save();
+
+    const newpayment = {
+      user: user._id,
+      type: "Credit",
+      description: "This amount will be used for account verification",
+      amount: 1,
+      status: true,
+      balance: 1,
+    };
+    const payments = new Payment({
+      description: "Registration bonus added",
+      type: "Credit",
+      amount: 5,
+      user: user._id,
+      balance: 5,
+    });
+    await payments.save();
+    const newNotification = new Notification({
+      receiveUser: user._id,
+      message: `Welcome ${user.name} to FiveStarWeek family, Click here to read more welcome message`,
+      type: "welcome",
+      who: "FiveStarWeek",
+      id: process.env.WELCOME_MESSAGE_LINK,
+    });
+    newNotification.what.push({ item: "no item" });
+    newNotification.who.push({ item: "no item" });
+    await newNotification.save();
+    const earnings = new Earning(newpayment);
+    await earnings.save();
+    res
+      .status(201)
+      .send({ user, token, message: "You have successfully logged in!" });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 
 //name:Login
 //desc: login as a user
@@ -197,7 +282,7 @@ exports.user_google_login = async (req, res) => {
         user.roles.push(appConstant.USER_ROLE.USER);
         user.avatar.image = picture;
         user.avatar.zoom = 100;
-        user.language = "61d84c90d2618f3b70ce1042";
+        user.language = process.env.LANGUAGE;
         user.avatars.unshift(userAvatar);
         randomNumber = Math.floor(Math.random() * (20000 * 30000));
         user.userName =
@@ -222,7 +307,7 @@ exports.user_google_login = async (req, res) => {
         });
         const prefer = new Preference({
           user: user._id,
-          language: "61d84c90d2618f3b70ce1042",
+          language: process.env.LANGUAGE,
         });
 
         await prefer.save();

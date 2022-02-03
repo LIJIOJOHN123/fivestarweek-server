@@ -13,6 +13,7 @@ const {
   user_forgot_password,
   user_reset_password,
   master_admin_create,
+  user_mobile_login,
 } = require("../../controller/guest/guestUserController");
 const { run_validation } = require("../../middleware/validatorerror");
 const {
@@ -31,7 +32,7 @@ guest_router.post(
   user_login
 );
 guest_router.post("/register", register_middleware, user_registartion);
-
+guest_router.post("/mobile_login", user_mobile_login);
 /********* admin *******/
 guest_router.post("/admin", master_admin_create);
 guest_router.post("/google_login", user_google_login);
