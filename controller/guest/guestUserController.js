@@ -192,10 +192,38 @@ exports.user_google_login = async (req, res) => {
           message: "You have successfully logged in!",
         });
       } else if (!user) {
-        res.status(404).send({
-          message:
-            "You do not have acccount with us. Please go register page and create account",
+        const password = process.env.GOOGLE_PASSWORD;
+        const user = new User({ email, name, password });
+        user.roles.push(appConstant.USER_ROLE.USER);
+        user.avatar = picture;
+        user.language = req.body.language;
+        user.avatars.unshift(userAvatar);
+        randomNumber = Math.floor(Math.random() * (20000 * 30000));
+        user.userName =
+          name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
+        const token = await user.generateToken();
+        user.userId = exportIdGenerator(20);
+        if (req.query.refer !== "undefined") {
+          const referlid = req.query.refer;
+          const refelOwner = await User.findOne({ userId: referlid });
+          const ref = await Referal.findOne({ userId: refelOwner._id });
+          ref.usersRefered.push(user._id);
+          await ref.save();
+        }
+        const userScore = new Score({
+          user: user._id,
+          activity: "Registerd",
+          description: `You have successfully registered with FiveStarWeek`,
+          mode: "Credit",
+          points: 100,
         });
+        await userScore.save();
+        res.cookie("token", token);
+
+        res
+          .status(201)
+          .send({ user, token, message: "You have successfully logged in!" });
+        await user.save();
       }
     }
   } catch (error) {
@@ -223,7 +251,6 @@ exports.user_facebook_login = async (req, res) => {
     };
     if (user) {
       (user.avatar.image = url), user.avatars.unshift(userAvatar);
-      user.registerStatus = false;
       await user.save();
       const token = await user.generateToken();
       res.cookie("token", token);

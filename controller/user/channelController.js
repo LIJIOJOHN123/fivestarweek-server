@@ -394,7 +394,7 @@ exports.channel_list_public = async (req, res) => {
     const channels = await Channel.find({
       status: AppConstant.CHANNEL_STATUS.ACTIVE,
     })
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: 1 })
       .limit(parseInt(req.query.limit));
     res.send({ channelCount, channels });
   } catch (error) {

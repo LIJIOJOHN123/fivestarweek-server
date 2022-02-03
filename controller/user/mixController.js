@@ -614,7 +614,7 @@ exports.send_marketing_emails = async (req, res) => {
           from: process.env.SESFROMMAIL,
           subject: "Work from home - fivestarweek.com",
           message: `   <p>Hi ,</p> <br/>
-          <h4>Please click <a href="httldkjs">Click here<a/> to reset your password</h4>
+          <h4>Work from home and earn money</h4>
           <br/>
           <p>NB: This link expire after 10 minute.</p>
           <br/>

@@ -587,7 +587,7 @@ exports.article_delete = async (req, res) => {
     const userScore = new Score({
       user: req.user._id,
       activity: "Article",
-      description: `Article removed to FiveStarWeek - ${article.title}`,
+      description: `Article removed from Fivestarweek- ${article.title}`,
       mode: "Debit",
       points: 2,
       totalScore: scorePrev.totalScore - 2,
