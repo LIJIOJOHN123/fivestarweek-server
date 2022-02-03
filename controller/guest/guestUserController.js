@@ -218,6 +218,40 @@ exports.user_google_login = async (req, res) => {
           mode: "Credit",
           points: 100,
         });
+        const prefer = new Preference({
+          user: user._id,
+          language: req.body.language,
+        });
+
+        await prefer.save();
+        const newpayment = {
+          user: user._id,
+          type: "Credit",
+          description: "This amount will be used for account verification",
+          amount: 1,
+          status: true,
+          balance: 1,
+        };
+        const payments = new Payment({
+          description: "Registration bonus added",
+          type: "Credit",
+          amount: 5,
+          user: user._id,
+          balance: 5,
+        });
+        await payments.save();
+        const newNotification = new Notification({
+          receiveUser: user._id,
+          message: `Welcome ${user.name} to FiveStarWeek family, Click here to read more welcome message`,
+          type: "welcome",
+          who: "FiveStarWeek",
+          id: process.env.WELCOME_MESSAGE_LINK,
+        });
+        newNotification.what.push({ item: "no item" });
+        newNotification.who.push({ item: "no item" });
+        await newNotification.save();
+        const earnings = new Earning(newpayment);
+        await earnings.save();
         await userScore.save();
         res.cookie("token", token);
 
