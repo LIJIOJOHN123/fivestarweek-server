@@ -197,7 +197,7 @@ exports.user_google_login = async (req, res) => {
         user.roles.push(appConstant.USER_ROLE.USER);
         user.avatar.image = picture;
         user.avatar.zoom = 100;
-        user.language = req.body.language;
+        user.language = "61d84c90d2618f3b70ce1042";
         user.avatars.unshift(userAvatar);
         randomNumber = Math.floor(Math.random() * (20000 * 30000));
         user.userName =
@@ -220,7 +220,7 @@ exports.user_google_login = async (req, res) => {
         });
         const prefer = new Preference({
           user: user._id,
-          language: req.body.language,
+          language: "61d84c90d2618f3b70ce1042",
         });
 
         await prefer.save();
