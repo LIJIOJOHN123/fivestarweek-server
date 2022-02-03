@@ -204,7 +204,9 @@ exports.user_google_login = async (req, res) => {
           name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
         const token = await user.generateToken();
         user.userId = exportIdGenerator(20);
-        if (req.query.refer !== "undefined") {
+        await user.save();
+
+        if (req.query.refer !== undefined) {
           const referlid = req.query.refer;
           const refelOwner = await User.findOne({ userId: referlid });
           const ref = await Referal.findOne({ userId: refelOwner._id });
@@ -258,7 +260,6 @@ exports.user_google_login = async (req, res) => {
         res
           .status(201)
           .send({ user, token, message: "You have successfully logged in!" });
-        await user.save();
       }
     }
   } catch (error) {

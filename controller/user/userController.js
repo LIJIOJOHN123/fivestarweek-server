@@ -146,6 +146,7 @@ exports.user_info_auth = async (req, res) => {
 exports.user_update = async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "mobile", "phoneCode", "language", "value"];
+  console.log(req.body);
   if (req.body.name) {
     userRealName =
       req.body.name.toLowerCase().charAt(0).toUpperCase() +
@@ -168,14 +169,15 @@ exports.user_update = async (req, res) => {
     await updates.map((update) => (req.user[update] = req.body[update]));
     if (req.body.value) {
       req.user.language = userLanguage;
-      (req.user.registerStatus = false), (req.user.languageId = req.body.value);
+      req.user.languageId = req.body.value;
     }
     const prefer = await Preference.findOne({ user: req.user._id });
-    prefer.language = req.body.value;
+    prefer.language = userLanguage;
     await prefer.save();
     await req.user.save();
     res.send(req.user);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
