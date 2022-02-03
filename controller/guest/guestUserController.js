@@ -195,7 +195,8 @@ exports.user_google_login = async (req, res) => {
         const password = process.env.GOOGLE_PASSWORD;
         const user = new User({ email, name, password });
         user.roles.push(appConstant.USER_ROLE.USER);
-        user.avatar = picture;
+        user.avatar.image = picture;
+        user.avatar.zoom = 100;
         user.language = req.body.language;
         user.avatars.unshift(userAvatar);
         randomNumber = Math.floor(Math.random() * (20000 * 30000));
