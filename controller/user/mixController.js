@@ -393,12 +393,18 @@ exports.presearch = async (req, res) => {
   try {
     const channels = await Channel.find({
       status: AppConstant.CHANNEL_STATUS.ACTIVE,
-      verifiedStatus: AppConstant.CHANNEL_VERIFICATION.VERIFIED,
+      home: true,
     })
       .populate("user")
       .sort({ createdAt: -1 })
       .limit(18);
-    let channeOnline = channels.map((item) => item._id);
+    const channelsAll = await Channel.find({
+      status: AppConstant.CHANNEL_STATUS.ACTIVE,
+      home: true,
+    })
+      .sort({ createdAt: -1 })
+      .limit(150);
+    let channeOnline = channelsAll.map((item) => item._id);
     const articles = await Article.find({
       status: AppConstant.ARTICLE_STATUS.ACTIVE,
       type: "Article",
