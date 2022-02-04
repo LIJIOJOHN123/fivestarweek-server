@@ -146,6 +146,8 @@ exports.user_mobile_login = async (req, res) => {
         .status(200)
         .send({ user, token, message: "You have successfully logged in!" });
     } else {
+      let user = new User();
+      user.email = req.body.email;
       user.roles.push(appConstant.USER_ROLE.USER);
       user.name =
         req.body.name.toLowerCase().charAt(0).toUpperCase() +
@@ -156,10 +158,11 @@ exports.user_mobile_login = async (req, res) => {
       user.avatars.unshift({ image: req.body.photoUrl, zoom: "100%" });
       user.userName =
         req.body.name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
-      const token = await user.generateToken();
       user.language = req.body.language;
+      const token = await user.generateToken();
       res.cookie("token", token);
       await user.save();
+
       const prefer = new Preference({
         user: user._id,
         language: req.body.language,
