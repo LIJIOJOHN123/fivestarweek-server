@@ -33,25 +33,20 @@ exports.comment_create = async (req, res) => {
       receiveUser: article.user,
       type: "comment",
       message: `${req.user.name} commented on your post ${comment.title}`,
+      whoAvatar: `${req.user.avatar && req.user.avatar.image}`,
+      webRedirection: `${process.env.CLIENT_URL}/article/${comment.article}`,
+      mobileRedirection: `${comment.article}`,
     });
-    notification.who.push({
-      user: req.user._id,
-      avatar: req.user.avatar,
-      name: req.user.name,
-    });
-    notification.what.push(comment);
     await article.comments.map(async (item) => {
       const collageNotificaiton = new Notification({
         receiveUser: item,
         type: "comment",
         message: `${req.user.name}  commented on your post ${comment.title}`,
+        whoAvatar: `${req.user.avatar && req.user.avatar.image}`,
+        webRedirection: `${process.env.CLIENT_URL}/article/${comment.article}`,
+        mobileRedirection: `${comment.article}`,
       });
-      collageNotificaiton.who.push({
-        user: req.user._id,
-        avatar: req.user.avatar,
-        name: req.user.name,
-      });
-      collageNotificaiton.what.push(comment);
+
       await collageNotificaiton.save();
     });
 

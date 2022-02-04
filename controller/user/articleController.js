@@ -91,9 +91,10 @@ exports.article_create = async (req, res) => {
           message: `@${channelSecond.channelName} posted new item ${article.title}`,
           id: `${article._id}`,
           type: "article",
+          whoAvatar: `${channelSecond.avatar && channelSecond.avatar.image}`,
+          webRedirection: `${process.env.CLIENT_URL}/article/${article._id}`,
+          mobileRedirection: `${article._id}`,
         });
-        newNotification.what.push(article);
-        newNotification.who.push(channelSecond);
         await newNotification.save();
       });
       const scorePrev = await Score.findOne({ user: req.user._id }).sort({
@@ -181,11 +182,11 @@ exports.article_create = async (req, res) => {
               receiveUser: item.user,
               message: `@${channelList.channelName} posted new item ${article.title}`,
               type: "article",
-              who: channelList._id,
+              whoAvatar: `${channelList.avatar && channelList.avatar.image}`,
               id: article._id,
+              webRedirection: `${process.env.CLIENT_URL}/article/${article._id}`,
+              mobileRedirection: `${article._id}`,
             });
-            newNotification.what.push(article);
-            newNotification.who.push(channelList);
             await newNotification.save();
           });
           await article.save();
@@ -242,24 +243,20 @@ exports.article_like = async (req, res) => {
       receiveUser: article.user,
       type: "article",
       message: `${req.user.name} likes your post ${article.title}`,
+      whoAvatar: `${req.user.avatar && req.user.avatar.image}`,
+      webRedirection: `${process.env.CLIENT_URL}/article/${article._id}`,
+      mobileRedirection: `${article._id}`,
     });
-    notification.who.push({
-      user: req.user._id,
-      avatar: req.user.avatar,
-      name: req.user.name,
-    });
-    notification.what.push(article);
+
     await article.likes.map(async (item) => {
       const collageNotificaiton = new Notification({
         receiveUser: item.user,
         type: "article",
-        message: `${req.user.name} also liked  ${article.title}`,
+        message: `${req.user.name} also likes  ${article.title}`,
+        whoAvatar: `${req.user.avatar && req.user.avatar.image}`,
+        webRedirection: `${process.env.CLIENT_URL}/article/${article._id}`,
+        mobileRedirection: `${article._id}`,
       });
-      collageNotificaiton.who.push({
-        user: req.user._id,
-        channel: req.params.id,
-      });
-      collageNotificaiton.what.push(article);
       await collageNotificaiton.save();
     });
 

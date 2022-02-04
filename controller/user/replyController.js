@@ -31,13 +31,10 @@ exports.reply_create = async (req, res) => {
       receiveUser: comment.user,
       type: "reply",
       message: `${req.user.name} replied on your comment ${reply.reply}`,
+      whoAvatar: `${req.user.avatar && req.user.avatar.image}`,
+      webRedirection: `${process.env.CLIENT_URL}/article/${reply.article}`,
+      mobileRedirection: `${reply.comment}`,
     });
-    notification.who.push({
-      user: req.user._id,
-      avatar: req.user.avatar,
-      name: req.user.name,
-    });
-    notification.what.push(reply);
     await notification.save();
     res.send(reply);
   } catch (error) {

@@ -101,7 +101,7 @@ const UserSchema = new Schema(
     ],
     mobile: {
       type: String,
-      default: "9108167660",
+      default: "9000000000",
     },
     phoneCode: {
       type: String,

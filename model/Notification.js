@@ -8,8 +8,7 @@ const notificationSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       Ref: "User",
     },
-    who: [],
-    what: [],
+    whoAvatar: { type: String },
     type: {
       type: String,
     },
@@ -17,6 +16,12 @@ const notificationSchema = new Schema(
       type: String,
     },
     message: {
+      type: String,
+    },
+    webRedirection: {
+      type: String,
+    },
+    mobileRedirection: {
       type: String,
     },
     readStatus: {

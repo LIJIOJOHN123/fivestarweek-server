@@ -191,13 +191,10 @@ exports.channel_follow = async (req, res) => {
       receiveUser: channel.user,
       message: `${req.user.name} started following your channel @${channel.channelName}.`,
       type: "channel",
+      whoAvatar: `${req.user.avatar && req.user.avatar.image}`,
+      webRedirection: `${process.env.CLIENT_URL}/channels/${channel._id}`,
+      mobileRedirection: `${channel._id}`,
     });
-    newNotification.who.push({
-      user: req.user._id,
-      avatar: req.user.avatar,
-      name: req.user.name,
-    });
-    newNotification.what.push(channel);
     await newNotification.save();
     await channel.save();
     res.send(channel);

@@ -110,13 +110,14 @@ exports.user_registartion = async (req, res) => {
     await payments.save();
     const newNotification = new Notification({
       receiveUser: user._id,
-      message: `Welcome ${user.name} to FiveStarWeek family, Click here to read more welcome message`,
+      message: `Welcome ${user.name} to FiveStarWeek family.`,
       type: "welcome",
-      who: "FiveStarWeek",
+      whoAvatar:
+        "https://fivestarweek.s3.ap-south-1.amazonaws.com/public/icon_android.png",
       id: process.env.WELCOME_MESSAGE_LINK,
+      webRedirection: `${process.env.CLIENT_URL}/home`,
+      mobileRedirection: "own",
     });
-    newNotification.what.push({ item: "no item" });
-    newNotification.who.push({ item: "no item" });
     await newNotification.save();
     const earnings = new Earning(newpayment);
     await earnings.save();
@@ -154,7 +155,7 @@ exports.user_mobile_login = async (req, res) => {
         req.body.name.slice(1);
       user.userId = exportIdGenerator(20);
       randomNumber = Math.floor(Math.random() * (20000 * 30000));
-      user.avatar.image = req.body.photUrl;
+      user.avatar.image = req.body.photoUrl;
       user.avatars.unshift({ image: req.body.photoUrl, zoom: "100%" });
       user.userName =
         req.body.name.toLowerCase().trim().replace(/\s/g, "") + randomNumber;
@@ -197,13 +198,14 @@ exports.user_mobile_login = async (req, res) => {
       await payments.save();
       const newNotification = new Notification({
         receiveUser: user._id,
-        message: `Welcome ${user.name} to FiveStarWeek family, Click here to read more welcome message`,
+        message: `Welcome ${user.name} to FiveStarWeek family.`,
         type: "welcome",
-        who: "FiveStarWeek",
+        whoAvatar:
+          "https://fivestarweek.s3.ap-south-1.amazonaws.com/public/icon_android.png",
         id: process.env.WELCOME_MESSAGE_LINK,
+        webRedirection: `${process.env.CLIENT_URL}/home`,
+        mobileRedirection: "own",
       });
-      newNotification.what.push({ item: "no item" });
-      newNotification.who.push({ item: "no item" });
       await newNotification.save();
       const earnings = new Earning(newpayment);
       await earnings.save();
@@ -332,13 +334,14 @@ exports.user_google_login = async (req, res) => {
         await payments.save();
         const newNotification = new Notification({
           receiveUser: user._id,
-          message: `Welcome ${user.name} to FiveStarWeek family, Click here to read more welcome message`,
+          message: `Welcome ${user.name} to FiveStarWeek family.`,
           type: "welcome",
-          who: "FiveStarWeek",
+          whoAvatar:
+            "https://fivestarweek.s3.ap-south-1.amazonaws.com/public/icon_android.png",
           id: process.env.WELCOME_MESSAGE_LINK,
+          webRedirection: `${process.env.CLIENT_URL}/home`,
+          mobileRedirection: "own",
         });
-        newNotification.what.push({ item: "no item" });
-        newNotification.who.push({ item: "no item" });
         await newNotification.save();
         const earnings = new Earning(newpayment);
         await earnings.save();
