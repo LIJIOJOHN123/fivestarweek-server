@@ -6,6 +6,7 @@ const {
   article_unblock,
   article_violation_list,
   article_search,
+  articles_multiple,
 } = require("../../controller/admin/articleManagement");
 
 /********* User managment *******/
@@ -19,5 +20,6 @@ admin_article.post(
 admin_article.get("/admin/articlesearch", admin_middleware, article_search);
 
 admin_article.get("/admin/violationarticle", article_violation_list);
+admin_article.post("/admin/multiplearticle", articles_multiple);
 
 module.exports = admin_article;

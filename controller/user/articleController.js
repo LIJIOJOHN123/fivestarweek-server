@@ -733,17 +733,21 @@ exports.article_home = async (req, res) => {
       language,
     });
     let channelIds = await channels.map((channel) => channel._id);
+    const articlesCount = await Article.find({
+      channel: channelIds,
+      status: AppConstant.ARTICLE_STATUS.ACTIVE,
+    }).countDocuments();
     const articles = await Article.find({
       channel: channelIds,
       status: AppConstant.ARTICLE_STATUS.ACTIVE,
     })
       .sort({ createdAt: -1 })
-      .limit(28)
+      .limit(parseInt(req.query.limit))
       .populate("channel");
     const channelGuest = await Channel.find({
       language: req.query.language,
-    }).limit(parseInt(12));
-    res.send({ articles, channelGuest });
+    }).limit(parseInt(6));
+    res.send({ articles, channelGuest, articlesCount });
   } catch (error) {
     res.status(500).send(error);
   }

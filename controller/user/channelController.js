@@ -277,9 +277,10 @@ exports.channel_filter_unfollowed_by_user = async (req, res) => {
     const chan = channel.map((chans) => chans._id.toString());
     const myArray = chan.filter((i) => followChann.indexOf(i) === -1);
     const channelCount = await Channel.find({ _id: myArray }).countDocuments();
-    const channels = await Channel.find({ _id: myArray }).limit(
-      parseInt(req.query.limit)
-    );
+    const channels = await Channel.find({
+      _id: myArray,
+      verifiedStatus: AppConstant.CHANNEL_VERIFICATION.VERIFIED,
+    }).limit(parseInt(req.query.limit));
     res.send({ channelCount, channels });
   } catch (error) {
     res.status(500).send(error);
@@ -390,6 +391,7 @@ exports.channel_list_public = async (req, res) => {
     }).countDocuments();
     const channels = await Channel.find({
       status: AppConstant.CHANNEL_STATUS.ACTIVE,
+      verifiedStatus: AppConstant.CHANNEL_VERIFICATION.VERIFIED,
     })
       .sort({ createdAt: 1 })
       .limit(parseInt(req.query.limit));
