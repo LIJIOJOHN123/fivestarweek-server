@@ -507,7 +507,7 @@ exports.article_visit_auth = async (req, res) => {
     const uniquevistor = await ArticleVisitAuth.findOne({
       user: req.user._id,
     }).countDocuments();
-    let thresh = 30; //points
+    let thresh = 80; //points
     const score_all = await Score.aggregate([
       {
         $match: {
@@ -560,12 +560,10 @@ exports.article_visit_auth = async (req, res) => {
     }
 
     //passive
-    const uniquevistors = await ArticleViewAuth.find({
+    const uniquevistors = await ArticleVisitAuth.find({
       article: req.params.id,
-    })
-      .distinct("user")
-      .countDocuments();
-    let threshhold = 4; //thresh
+    }).countDocuments();
+    let threshhold = 250; //thresh
 
     const score_visitor_point = await Score.aggregate([
       {
