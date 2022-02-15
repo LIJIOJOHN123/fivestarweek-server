@@ -478,10 +478,8 @@ exports.article_visit_auth = async (req, res) => {
     }
     const uniquevistor = await ArticleVisitAuth.findOne({
       article: req.params.id,
-    })
-      .distinct("user")
-      .countDocuments();
-    let thresh = 100; //points
+    }).countDocuments();
+    let thresh = 10; //points
     const scores =
       (await Score.find({
         type: "Visit",
@@ -510,7 +508,7 @@ exports.article_visit_auth = async (req, res) => {
     })
       .distinct("user")
       .countDocuments();
-    let threshhold = 250; //thresh
+    let threshhold = 4; //thresh
     const score =
       (await Score.find({
         type: "Visited",

@@ -214,6 +214,7 @@ exports.user_mobile_login = async (req, res) => {
         .send({ user, token, message: "You have successfully logged in!" });
     }
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -319,7 +320,8 @@ exports.user_google_login = async (req, res) => {
         const newpayment = {
           user: user._id,
           type: "Credit",
-          description: "This amount will be used for account verification",
+          description:
+            "This amount will be used for bank/paypal account verification",
           amount: 1,
           status: true,
           balance: 1,
