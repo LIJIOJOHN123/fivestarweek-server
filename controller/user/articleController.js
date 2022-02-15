@@ -97,16 +97,30 @@ exports.article_create = async (req, res) => {
         });
         await newNotification.save();
       });
-      const scorePrev = await Score.findOne({ user: req.user._id }).sort({
-        createdAt: -1,
-      });
+      const score_previous = await Score.aggregate([
+        {
+          $match: {
+            $and: [{ user: req.user._id }],
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: {
+              $sum: "$points",
+            },
+          },
+        },
+      ]);
+      const scorePrev = score_previous[0].total;
+
       const userScore = new Score({
         user: req.user._id,
         activity: "Article",
         description: `Article added to FiveStarWeek - ${article.title}`,
         mode: "Credit",
         points: 2,
-        totalScore: scorePrev === null ? 2 : scorePrev.totalScore + 2,
+        totalScore: scorePrev + 2,
       });
       await userScore.save();
       return res.send(article);
@@ -159,16 +173,29 @@ exports.article_create = async (req, res) => {
             datas.articleIds.unshift(article._id);
             article.publisherId = datas._id;
             await datas.save();
-            const scorePrev = await Score.findOne({ user: req.user._id }).sort({
-              createdAt: -1,
-            });
+            const score_previous = await Score.aggregate([
+              {
+                $match: {
+                  $and: [{ user: req.user._id }],
+                },
+              },
+              {
+                $group: {
+                  _id: null,
+                  total: {
+                    $sum: "$points",
+                  },
+                },
+              },
+            ]);
+            const scorePrev = score_previous[0].total;
             const userScore = new Score({
               user: req.user._id,
               activity: "Article",
               description: `Article added to FiveStarWeek - ${article.title}`,
               mode: "Credit",
               points: 2,
-              totalScore: scorePrev === null ? 2 : scorePrev.totalScore + 2,
+              totalScore: scorePrev + 2,
             });
             await userScore.save();
           }
@@ -463,6 +490,7 @@ exports.article_visit_auth = async (req, res) => {
       state: req.body.region,
       keywords: article.keywords.toString(),
     };
+
     const visitedArticle = new ArticleVisitAuth(newView);
     await visitedArticle.save();
     article.visit.unshift(visitedArticle._id);
@@ -477,61 +505,105 @@ exports.article_visit_auth = async (req, res) => {
       await aricleSponsore.save();
     }
     const uniquevistor = await ArticleVisitAuth.findOne({
-      article: req.params.id,
+      user: req.user._id,
     }).countDocuments();
-    let thresh = 10; //points
-    const scores =
-      (await Score.find({
-        type: "Visit",
-        user: req.user._id,
-      }).countDocuments()) * 5;
-    const results = uniquevistor / thresh;
-    const bala = results - scores;
-    const scorePrev = await Score.findOne({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
-    if (bala === 1) {
+    let thresh = 30; //points
+    const score_all = await Score.aggregate([
+      {
+        $match: {
+          $and: [{ activity: "Visit" }, { user: req.user._id }],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$points",
+          },
+        },
+      },
+    ]);
+    let scores = score_all[0]
+      ? Math.floor((score_all[0].total / 5) * thresh)
+      : 0;
+    const bala = uniquevistor - scores;
+
+    const score_previous = await Score.aggregate([
+      {
+        $match: {
+          $and: [{ user: req.user._id }],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$points",
+          },
+        },
+      },
+    ]);
+    const scorePrev = score_previous[0].total;
+    if (bala > thresh) {
+      const results = bala / thresh;
+      let num = Math.floor(results);
+      let mark = num * 5;
       const userScore = new Score({
         user: article.user,
         activity: "Visit",
-        description: `You have viewed 100 articles`,
+        description: `You have visited ${bala} articles`,
         mode: "Credit",
-        points: 5,
-        totalScore: parseInt(scorePrev.totalScore) + 5,
+        points: mark,
+        totalScore: parseInt(scorePrev) + mark,
       });
       await userScore.save();
     }
 
     //passive
     const uniquevistors = await ArticleViewAuth.find({
-      user: req.user._id,
+      article: req.params.id,
     })
       .distinct("user")
       .countDocuments();
     let threshhold = 4; //thresh
-    const score =
-      (await Score.find({
-        type: "Visited",
-        user: article.user,
-      }).countDocuments()) * 10;
-    const result = uniquevistors / threshhold;
-    let balance = result - score;
-    const scorePrevs = await Score.findOne({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
-    if (balance === 1) {
+
+    const score_visitor_point = await Score.aggregate([
+      {
+        $match: {
+          $and: [{ activity: "Visited" }, { user: req.user._id }],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$points",
+          },
+        },
+      },
+    ]);
+    let score_visitor = score_visitor_point[0]
+      ? Math.floor((score_visitor_point[0].total / 10) * threshhold)
+      : 0;
+    const balan = uniquevistors - score_visitor;
+
+    if (balan > threshhold) {
+      const results = balan / threshhold;
+      let num = Math.floor(results);
+      let mark = num * 10;
       const userScore = new Score({
         user: article.user,
         activity: "Visited",
-        description: `You have 250 more visitors viewed  article ${req.user._id}`,
+        description: `You have ${balan} more people visited  article ${req.user._id}`,
         mode: "Credit",
-        points: 10,
-        totalScore: scorePrevs === null ? 10 : scorePrevs.totalScore + 10,
+        points: mark,
+        totalScore: parseInt(scorePrev) + mark,
       });
       await userScore.save();
     }
     res.send(article);
   } catch (error) {
+    console.log(error);
     res.status(500).send(error);
   }
 };
@@ -576,16 +648,29 @@ exports.article_delete = async (req, res) => {
       user: req.user._id,
     });
     article.status = AppConstant.ARTICLE_STATUS.BLOCKED;
-    const scorePrev = await Score.findOne({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
+    const score_previous = await Score.aggregate([
+      {
+        $match: {
+          $and: [{ user: req.user._id }],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$points",
+          },
+        },
+      },
+    ]);
+    const scorePrev = score_previous[0].total;
     const userScore = new Score({
       user: req.user._id,
       activity: "Article",
       description: `Article removed from Fivestarweek- ${article.title}`,
       mode: "Debit",
       points: 2,
-      totalScore: scorePrev.totalScore - 2,
+      totalScore: scorePrev - 2,
     });
     await article.save();
     await userScore.save();

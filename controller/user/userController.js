@@ -330,18 +330,30 @@ exports.user_premium_callback_api = async (req, res) => {
       );
 
       if (req.params.amount == "299") {
-        const scorePrev = await Score.findOne({
-          user: req.params.id,
-        }).sort({
-          createdAt: -1,
-        });
+        const score_previous = await Score.aggregate([
+          {
+            $match: {
+              $and: [{ user: req.params.id }],
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$points",
+              },
+            },
+          },
+        ]);
+        const scorePrev = score_previous[0].total;
+
         const userScore = new Score({
           user: req.params.id,
           activity: "Premium",
           description: `Congradulation- Added 350 points for choosing silver premium plan`,
           mode: "Credit",
           points: 350,
-          totalScore: scorePrev === null ? 350 : scorePrev.totalScore + 350,
+          totalScore: scorePrev + 350,
         });
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.SILVER;
@@ -358,7 +370,7 @@ exports.user_premium_callback_api = async (req, res) => {
           description: `Congradulation- Added 1000 points for choosing gold premium plan`,
           mode: "Credit",
           points: 1000,
-          totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 1000,
+          totalScore: scorePrev + 1000,
         });
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.GOLD;
@@ -375,7 +387,7 @@ exports.user_premium_callback_api = async (req, res) => {
           description: `Congradulation- Added 2500 points for choosing diamond premium plan`,
           mode: "Credit",
           points: 2500,
-          totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 2500,
+          totalScore: scorePrev + 2500,
         });
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.DIAMOND;
@@ -540,18 +552,30 @@ exports.user_premium_callback_api = async (req, res) => {
       );
 
       if (req.params.amount == "299") {
-        const scorePrev = await Score.findOne({
-          user: req.params.id,
-        }).sort({
-          createdAt: -1,
-        });
+        const score_previous = await Score.aggregate([
+          {
+            $match: {
+              $and: [{ user: req.params.id }],
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$points",
+              },
+            },
+          },
+        ]);
+        const scorePrev = score_previous[0].total;
+
         const userScore = new Score({
           user: req.params.id,
           activity: "Premium",
           description: `Congradulation- Added 350 points for choosing silver premium plan`,
           mode: "Credit",
           points: 350,
-          totalScore: scorePrev === null ? 350 : scorePrev.totalScore + 350,
+          totalScore: scorePrev + 350,
         });
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.SILVER;
@@ -568,7 +592,7 @@ exports.user_premium_callback_api = async (req, res) => {
           description: `Congradulation- Added 1000 points for choosing gold premium plan`,
           mode: "Credit",
           points: 1000,
-          totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 1000,
+          totalScore: scorePrev + 1000,
         });
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.GOLD;
@@ -585,7 +609,7 @@ exports.user_premium_callback_api = async (req, res) => {
           description: `Congradulation- Added 2500 points for choosing diamond premium plan`,
           mode: "Credit",
           points: 2500,
-          totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 2500,
+          totalScore: scorePrev + 2500,
         });
         await userScore.save();
         user.premiumType = AppConstant.PREMIUM_TYPE.DIAMOND;

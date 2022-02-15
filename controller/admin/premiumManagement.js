@@ -44,18 +44,29 @@ exports.premium_user_approve = async (req, res) => {
     user.premiumDate = Date.now();
     if (buyer.type === AppConstant.PREMIUM_USER_TYPE.NEW) {
       if (buyer.amount == 299) {
-        const scorePrev = await Score.findOne({
-          user: user._id,
-        }).sort({
-          createdAt: -1,
-        });
+        const score_previous = await Score.aggregate([
+          {
+            $match: {
+              $and: [{ user: user._id }],
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$points",
+              },
+            },
+          },
+        ]);
+        const scorePrev = score_previous[0].total;
         const userScore = new Score({
           user: user._id,
           activity: "Premium",
           description: `Congradulation- Added 350 points for choosing silver premium plan`,
           mode: "Credit",
           points: 350,
-          totalScore: scorePrev === null ? 350 : scorePrev.totalScore + 350,
+          totalScore: scorePrev + 350,
         });
         const earn = await Earning.findOne({ user: buyer.user }).sort({
           createdAt: -1,
@@ -75,18 +86,29 @@ exports.premium_user_approve = async (req, res) => {
         user.premiumType = AppConstant.PREMIUM_TYPE.SILVER;
       } else if (buyer.amount == 499) {
         user.isVerified = true;
-        const scorePrev = await Score.findOne({
-          user: user._id,
-        }).sort({
-          createdAt: -1,
-        });
+        const score_previous = await Score.aggregate([
+          {
+            $match: {
+              $and: [{ user: user._id }],
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$points",
+              },
+            },
+          },
+        ]);
+        const scorePrev = score_previous[0].total;
         const userScore = new Score({
           user: user._id,
           activity: "Premium",
           description: `Congradulation- Added 1000 points for choosing gold premium plan`,
           mode: "Credit",
           points: 1000,
-          totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 1000,
+          totalScore: scorePrev + 1000,
         });
         const earn = await Earning.findOne({ user: buyer.user }).sort({
           createdAt: -1,
@@ -106,18 +128,29 @@ exports.premium_user_approve = async (req, res) => {
         user.premiumType = AppConstant.PREMIUM_TYPE.GOLD;
       } else if (buyer.amount == 999) {
         user.isVerified = true;
-        const scorePrev = await Score.findOne({
-          user: user._id,
-        }).sort({
-          createdAt: -1,
-        });
+        const score_previous = await Score.aggregate([
+          {
+            $match: {
+              $and: [{ user: user._id }],
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              total: {
+                $sum: "$points",
+              },
+            },
+          },
+        ]);
+        const scorePrev = score_previous[0].total;
         const userScore = new Score({
           user: user._id,
           activity: "Premium",
           description: `Congradulation- Added 2500 points for choosing diamond premium plan`,
           mode: "Credit",
           points: 2500,
-          totalScore: scorePrev === null ? 100 : scorePrev.totalScore + 2500,
+          totalScore: scorePrev + 2500,
         });
         const earn = await Earning.findOne({ user: buyer.user }).sort({
           createdAt: -1,

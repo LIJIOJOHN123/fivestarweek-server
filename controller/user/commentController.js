@@ -51,16 +51,29 @@ exports.comment_create = async (req, res) => {
     });
 
     await notification.save();
-    const scorePrev = await Score.findOne({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
+    const score_previous = await Score.aggregate([
+      {
+        $match: {
+          $and: [{ user: req.user._id }],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$points",
+          },
+        },
+      },
+    ]);
+    const scorePrev = score_previous[0].total;
     const userScore = new Score({
       user: req.user._id,
       activity: "Comment",
       description: `new comment posted - ${comment.comment}`,
       mode: "Credit",
       points: 3,
-      totalScore: scorePrev === null ? 3 : scorePrev.totalScore + 3,
+      totalScore: scorePrev + 3,
     });
     await userScore.save();
     await article.save();
@@ -198,16 +211,29 @@ exports.comment_delete = async (req, res) => {
       _id: req.params.id,
     });
     comment.status = AppConstant.COMMENT_STATUS.BLOCKED;
-    const scorePrev = await Score.findOne({ user: req.user._id }).sort({
-      createdAt: -1,
-    });
+    const score_previous = await Score.aggregate([
+      {
+        $match: {
+          $and: [{ user: req.user._id }],
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: {
+            $sum: "$points",
+          },
+        },
+      },
+    ]);
+    const scorePrev = score_previous[0].total;
     const userScore = new Score({
       user: req.user._id,
       activity: "Comment",
       description: `new comment deleted - ${comment.comment}`,
       mode: "Debit",
       points: 3,
-      totalScore: scorePrev.totalScore - 3,
+      totalScore: scorePrev - 3,
     });
     await comment.save();
     await userScore.save();

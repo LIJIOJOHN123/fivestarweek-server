@@ -181,16 +181,30 @@ exports.articles_multiple = async (req, res) => {
         });
         await newNotification.save();
       });
-      const scorePrev = await Score.findOne({ user: datas[index].user }).sort({
-        createdAt: -1,
-      });
+      const score_previous = await Score.aggregate([
+        {
+          $match: {
+            $and: [{ user: datas[index].use }],
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            total: {
+              $sum: "$points",
+            },
+          },
+        },
+      ]);
+      const scorePrev = score_previous[0].total;
+
       const userScore = new Score({
         user: datas[index].user,
         activity: "Article",
         description: `Article added to FiveStarWeek - ${article.title}`,
         mode: "Credit",
         points: 2,
-        totalScore: scorePrev === null ? 2 : scorePrev.totalScore + 2,
+        totalScore: scorePrev + 2,
       });
       await userScore.save();
     }
