@@ -36,7 +36,9 @@ exports.category_list = async (req, res) => {
 //get  category by id
 exports.category_by_id = async (req, res) => {
   try {
-    const category = await Category.findOne({ _id: req.params.id });
+    const category = await Category.findOne({ _id: req.params.id }).populate(
+      "channels"
+    );
     await category;
     res.send({ category });
   } catch (error) {
