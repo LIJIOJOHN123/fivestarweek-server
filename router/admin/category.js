@@ -8,6 +8,7 @@ const {
   category_remove_channel,
   category_block,
   category_unblock,
+  category_by_id,
 } = require("../../controller/admin/categoryManagement");
 
 /********* Category  managment *******/
@@ -17,6 +18,11 @@ admin_category.post(
   category_create
 );
 admin_category.get("/admin/categorylist", admin_middleware, category_list);
+admin_category.get(
+  "/admin/category_by_id/:id",
+  admin_middleware,
+  category_by_id
+);
 admin_category.post(
   "/admin/category_edit/:id",
   admin_middleware,

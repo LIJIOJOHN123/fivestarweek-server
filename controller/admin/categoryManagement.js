@@ -33,6 +33,16 @@ exports.category_list = async (req, res) => {
     res.status(500).send(error);
   }
 };
+//get  category by id
+exports.category_by_id = async (req, res) => {
+  try {
+    const category = await Category.findOne({ _id: req.params.id });
+    await category;
+    res.send({ category });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
 //add channels
 exports.category_add_channel = async (req, res) => {
   try {
