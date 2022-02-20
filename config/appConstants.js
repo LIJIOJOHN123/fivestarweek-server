@@ -125,5 +125,9 @@ class AppConstant {
     ACTIVE: 0,
     BLOCKED: 1,
   };
+  static CATEGORY = {
+    ACTIVE: 0,
+    BLOCKED: 1,
+  };
 }
 module.exports = AppConstant;

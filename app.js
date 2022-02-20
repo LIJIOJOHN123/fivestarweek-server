@@ -64,7 +64,7 @@ const admin_publisher = require("./router/admin/publisher");
 const admin_task = require("./router/admin/task");
 const admin_department = require("./router/admin/department");
 const admin_team = require("./router/admin/team");
-
+const admin_category = require("./router/admin/category");
 // const adminRouter = require("./router/admin");
 //user
 app.use("/api", guest_router);
@@ -92,4 +92,5 @@ app.use("/api", admin_publisher);
 app.use("/api", admin_task);
 app.use("/api", admin_department);
 app.use("/api", admin_team);
+app.use("/api", admin_category);
 module.exports = app;
