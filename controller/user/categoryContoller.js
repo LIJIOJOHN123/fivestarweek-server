@@ -30,7 +30,7 @@ exports.category_list = async (req, res) => {
         .sort({ createdAt: -1 })
         .limit(8);
 
-      items.push(categoryItem);
+      item.articles.length > 4 && items.push(categoryItem);
     }
 
     res.send({ items, categoriesCount });

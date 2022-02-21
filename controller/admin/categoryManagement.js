@@ -25,7 +25,7 @@ exports.category_create = async (req, res) => {
 exports.category_list = async (req, res) => {
   try {
     const categories = await Category.find()
-      .sort({ createdAt: -1 })
+      .sort({ status: 1 })
       .limit(parseInt(req.query.limit));
     await categories;
     res.send({ categories });
