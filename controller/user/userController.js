@@ -146,7 +146,6 @@ exports.user_info_auth = async (req, res) => {
 exports.user_update = async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "mobile", "phoneCode", "language", "value"];
-  console.log(req.body);
   if (req.body.name) {
     userRealName =
       req.body.name.toLowerCase().charAt(0).toUpperCase() +
