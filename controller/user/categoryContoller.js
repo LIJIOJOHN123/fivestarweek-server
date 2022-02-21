@@ -10,7 +10,7 @@ exports.category_list = async (req, res) => {
     const categoriesCount = await Category.find({
       status: AppConstant.CATEGORY.ACTIVE,
       language: req.params.id,
-    }).countDocument();
+    }).countDocuments();
     const categories = await Category.find({
       status: AppConstant.CATEGORY.ACTIVE,
       language: req.params.id,
@@ -48,7 +48,7 @@ exports.category_by_id = async (req, res) => {
     });
     const articlesCount = await Article.find({
       channel: category.channels,
-    }).countDocument();
+    }).countDocuments();
     const articles = await Article.find({ channel: category.channels })
       .populate("channel")
       .sort({ createdAt: -1 })
