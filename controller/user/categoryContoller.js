@@ -7,6 +7,10 @@ const Article = require("../../model/Article");
 //get category  list - active
 exports.category_list = async (req, res) => {
   try {
+    const categoriesCount = await Category.find({
+      status: AppConstant.CATEGORY.ACTIVE,
+      language: req.params.id,
+    }).countDocument();
     const categories = await Category.find({
       status: AppConstant.CATEGORY.ACTIVE,
       language: req.params.id,
@@ -29,7 +33,7 @@ exports.category_list = async (req, res) => {
       items.push(categoryItem);
     }
 
-    res.send({ items });
+    res.send({ items, categoriesCount });
   } catch (error) {
     console.log(error);
     res.status(500).send(error);
@@ -42,11 +46,14 @@ exports.category_by_id = async (req, res) => {
       _id: req.params.id,
       status: AppConstant.CATEGORY.ACTIVE,
     });
+    const articlesCount = await Article.find({
+      channel: category.channels,
+    }).countDocument();
     const articles = await Article.find({ channel: category.channels })
       .populate("channel")
       .sort({ createdAt: -1 })
       .limit(parseInt(req.query.limit));
-    res.send({ category, articles });
+    res.send({ category, articles, articlesCount });
   } catch (error) {
     res.status(500).send(error);
   }
