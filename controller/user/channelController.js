@@ -315,7 +315,9 @@ exports.channel_list_suggestion_auth_user_by_qualification = async (
     );
     const articles = await Article.find({ channel: myArray })
       .populate("channel")
+      .sort({ createdAt: -1 })
       .limit(parseInt(req.query.limits));
+
     res.send({ channels, articles });
   } catch (error) {
     res.status(500).send(error);
