@@ -313,7 +313,10 @@ exports.channel_list_suggestion_auth_user_by_qualification = async (
     const channels = await Channel.find({ _id: myArray }).limit(
       parseInt(req.query.limit)
     );
-    res.send({ channels });
+    const articles = await Article.find({ channel: myArray }).limit(
+      parseInt(req.query.limits)
+    );
+    res.send({ channels, articles });
   } catch (error) {
     res.status(500).send(error);
   }
