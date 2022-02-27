@@ -15,7 +15,7 @@ exports.category_list = async (req, res) => {
       status: AppConstant.CATEGORY.ACTIVE,
       language: req.params.id,
     })
-      .sort({ createdAt: -1 })
+      .sort({ updatedAt: -1 })
       .limit(parseInt(req.query.limit));
     let items = [];
     for (let i = 0; i < categories.length; i++) {
@@ -25,6 +25,7 @@ exports.category_list = async (req, res) => {
       categoryItem.localCategory = categories[i].localCategory;
       categoryItem.articles = await Article.find({
         channel: categories[i].channels,
+        status: AppConstant.ARTICLE_STATUS.ACTIVE,
       })
         .populate("channel")
         .sort({ createdAt: -1 })
