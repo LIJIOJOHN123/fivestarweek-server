@@ -50,7 +50,32 @@ exports.category_by_id = async (req, res) => {
     const articlesCount = await Article.find({
       channel: category.channels,
     }).countDocuments();
-    const articles = await Article.find({ channel: category.channels })
+    const articles = await Article.find({
+      channel: category.channels,
+      status: AppConstant.ARTICLE_STATUS.ACTIVE,
+    })
+      .populate("channel")
+      .sort({ createdAt: -1 })
+      .limit(50);
+    res.send({ category, articles, articlesCount });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+//website
+exports.category_by_id_website = async (req, res) => {
+  try {
+    const category = await Category.findOne({
+      _id: req.params.id,
+      status: AppConstant.CATEGORY.ACTIVE,
+    });
+    const articlesCount = await Article.find({
+      channel: category.channels,
+    }).countDocuments();
+    const articles = await Article.find({
+      channel: category.channels,
+      status: AppConstant.ARTICLE_STATUS.ACTIVE,
+    })
       .populate("channel")
       .sort({ createdAt: -1 })
       .limit(parseInt(req.query.limit));

@@ -31,6 +31,7 @@ const {
   category_by_id,
   category_subscribe,
   category_unsubscribe,
+  category_by_id_website,
 } = require("../../controller/user/categoryContoller");
 const auth_middleware = require("../../middleware/authMiddleware");
 
@@ -91,6 +92,8 @@ mix_router.get("/callback/premiumsale/:id/:amount", premium_callback_api);
 //category
 mix_router.get("/categorylist/:id", category_list);
 mix_router.get("/category_by_id/:id", category_by_id);
+mix_router.get("/category_by_id_website/:id", category_by_id_website);
+
 mix_router.post("/category_subscribe/:id", auth_middleware, category_subscribe);
 mix_router.post(
   "/category_unsubscribe/:id",
